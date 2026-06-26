@@ -2,6 +2,8 @@
 
 이 프로젝트는 GitHub 저장소에 올려서 이력 관리와 GitHub Actions를 사용할 예정입니다.
 
+- [GitHub 작업 규칙](./workflow.md)
+
 ## 현재 상태
 
 로컬 프로젝트를 먼저 Git 저장소로 초기화합니다.

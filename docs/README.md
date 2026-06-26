@@ -22,3 +22,4 @@
 ## GitHub
 
 - [GitHub 연결 문서](./github/README.md)
+- [GitHub 작업 규칙](./github/workflow.md)
