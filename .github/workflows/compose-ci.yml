@@ -1,0 +1,22 @@
+name: Compose CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: docker compose --profile backend --profile frontend --profile kafka --profile ai config
+
+      - name: Validate DB Compose
+        run: docker compose config
+        working-directory: db
