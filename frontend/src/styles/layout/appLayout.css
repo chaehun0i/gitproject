@@ -1,0 +1,167 @@
+.app-shell {
+  display: grid;
+  grid-template-columns: 212px minmax(0, 1fr);
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+  background: #ffffff;
+  transition: grid-template-columns 180ms ease;
+}
+
+.app-shell.sidebar-collapsed {
+  grid-template-columns: 82px minmax(0, 1fr);
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
+  padding: 28px 36px;
+  overflow: auto;
+  background: #fbfcff;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.topbar h1 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: clamp(1.55rem, 2vw, 2rem);
+  line-height: 1.28;
+}
+
+.topbar p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.page-card,
+.table-card,
+.metric-card {
+  max-width: none;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow);
+}
+
+.page-card h2,
+.table-card h2 {
+  margin: 0 0 14px;
+  color: var(--text);
+  font-size: 1.04rem;
+}
+
+.page-card p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.panel-title h2 {
+  margin: 0;
+}
+
+.panel-title button,
+.primary-action,
+.page-card button,
+.table-card button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: var(--blue);
+  font-weight: 900;
+}
+
+.metric-card {
+  min-height: 118px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.metric-card span,
+.metric-card small {
+  display: block;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.metric-card b {
+  display: block;
+  margin: 8px 0;
+  color: var(--text);
+  font-size: 1.65rem;
+}
+
+.done-label,
+.wait-label {
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 0.78rem;
+}
+
+.done-label {
+  color: var(--green);
+  background: #dcfce7;
+}
+
+.wait-label {
+  color: #475569;
+  background: #eef2f7;
+}
+
+input,
+select,
+textarea {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #dbe5f3;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+textarea {
+  min-height: 96px;
+  padding: 12px;
+  resize: vertical;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: #334155;
+  font-weight: 800;
+}
+
+@media (max-width: 980px) {
+  .app-shell,
+  .app-shell.sidebar-collapsed {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+  }
+
+  .dashboard {
+    padding: 22px;
+  }
+}

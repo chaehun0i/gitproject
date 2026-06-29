@@ -1,0 +1,149 @@
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 51;
+  display: grid;
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(820px, calc(100vh - 32px));
+  gap: 16px;
+  overflow: auto;
+  padding: 24px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.28);
+  transform: translate(-50%, -50%);
+}
+
+.analysis-dialog {
+  width: min(720px, calc(100vw - 32px));
+}
+
+.terms-dialog {
+  width: min(640px, calc(100vw - 32px));
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dialog-head button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: #eef2ff;
+}
+
+.analysis-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 6px;
+  border-radius: 10px;
+  background: #eef3ff;
+}
+
+.analysis-tabs button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  color: #475569;
+  background: transparent;
+  font-weight: 900;
+}
+
+.analysis-tabs button.active {
+  color: var(--blue);
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+}
+
+.dialog-form {
+  display: grid;
+  gap: 16px;
+}
+
+.command-help {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid #dbe5f3;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.command-help code {
+  overflow-wrap: anywhere;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: #dbeafe;
+  background: #0f172a;
+  font-size: 0.86rem;
+}
+
+.upload-box {
+  display: grid;
+  min-height: 156px;
+  place-items: center;
+  padding: 20px;
+  border: 1px dashed #9bb5ff;
+  border-radius: 12px;
+  color: var(--blue);
+  background: #f6f9ff;
+  text-align: center;
+}
+
+.upload-box input {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.outline-action {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #dbe5f3;
+  border-radius: 8px;
+  color: var(--blue);
+  background: #ffffff;
+  font-weight: 900;
+}
+
+.terms-body {
+  display: grid;
+  gap: 14px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e5eaf2;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.check-row input {
+  min-height: auto;
+  margin-top: 5px;
+}

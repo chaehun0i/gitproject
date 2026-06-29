@@ -9,12 +9,21 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://app:app_password@postgres:5432/app}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      JWE_SECRET: ${JWE_SECRET:-dev-only-change-me-commitlens-jwe-secret}
     volumes:
       - ./backend:/workspace
     working_dir: /workspace
     command: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     profiles:
       - backend
       - frontend
@@ -31,6 +40,46 @@ services:
         condition: service_started
     profiles:
       - frontend
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: ai-lab-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - backend
+      - frontend
+      - db
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:8.4.0}
+    container_name: ai-lab-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - backend
+      - frontend
+      - db
 
   kafka:
     image: bitnami/kafka:3.7
@@ -80,5 +129,7 @@ networks:
     name: ai-lab-network
 
 volumes:
+  postgres_data:
+  redis_data:
   kafka_data:
   ollama_data:
