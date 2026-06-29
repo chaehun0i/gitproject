@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.schemas.analysis_runs import AnalysisRunCreate, AnalysisRunSummary
+from schemas.analysis_runs import AnalysisRunCreate, AnalysisRunSummary
 
 router = APIRouter(prefix="/analysis-runs", tags=["analysis"])
 

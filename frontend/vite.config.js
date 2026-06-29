@@ -23,4 +23,13 @@ export default defineConfig({
       "/api": process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          charts: ["recharts"],
+        },
+      },
+    },
+  },
 });

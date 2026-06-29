@@ -4,7 +4,7 @@ import base64
 import hashlib
 import hmac
 import json
-import os
+import secrets
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -13,7 +13,7 @@ from jwcrypto import jwk, jwe
 
 
 def hash_password(password: str) -> str:
-    salt = os.urandom(16)
+    salt = secrets.token_bytes(16)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 120_000)
     return f"pbkdf2_sha256${base64.urlsafe_b64encode(salt).decode()}${base64.urlsafe_b64encode(digest).decode()}"
 

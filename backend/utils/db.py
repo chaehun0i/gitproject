@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import asyncpg
 
-from app.core.config import get_service_config
-from app.core.security import hash_password
+from core.security import hash_password
+from core.settings import settings
 
 
 async def connect_db() -> asyncpg.Connection:
-    config = get_service_config()
-    return await asyncpg.connect(config["postgres"])
+    return await asyncpg.connect(settings.database_url)
 
 
 async def find_user_by_email(connection: asyncpg.Connection, email: str) -> asyncpg.Record | None:

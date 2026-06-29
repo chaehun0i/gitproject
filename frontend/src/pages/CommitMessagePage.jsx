@@ -1,10 +1,18 @@
+import MessageTypeBarChart from "@components/charts/MessageTypeBarChart";
 import { notify } from "@utils/feedback";
 import PageShell from "@pages/PageShell";
 
 const messages = [
-  ["feat(auth): 로그인 로직 개선 및 예외 처리 추가", "feat", "auth", "로그인 개선"],
-  ["fix(auth): 로그인 실패 처리 개선 및 토큰 생성 로직 변경", "fix", "auth", "인증 처리"],
-  ["refactor(auth): 로그인 흐름 리팩터링 및 가독성 개선", "refactor", "auth", "코드 개선"],
+  ["feat(auth): 로그인 유지 토큰 갱신 흐름 추가", "feat", "auth", "로그인 유지"],
+  ["fix(auth): 세션 만료 시 사용자 상태 복원 실패 수정", "fix", "auth", "세션 처리"],
+  ["refactor(auth): 인증 설정을 settings 기반으로 분리", "refactor", "auth", "구조 개선"],
+];
+
+const messageStats = [
+  { name: "feat", value: 84 },
+  { name: "fix", value: 62 },
+  { name: "refactor", value: 48 },
+  { name: "docs", value: 28 },
 ];
 
 const CommitMessagePage = ({ currentPage, onNavigate }) => {
@@ -33,12 +41,7 @@ const CommitMessagePage = ({ currentPage, onNavigate }) => {
             <span><b>8</b>리뷰 필요</span>
           </div>
           <p>주요 변경 유형은 기능 추가와 리팩터링이며 인증 영역의 메시지는 Conventional Commits 규칙이 적합합니다.</p>
-          <div className="message-type-chart">
-            <span style={{ "--height": "84%" }}>feat</span>
-            <span style={{ "--height": "62%" }}>fix</span>
-            <span style={{ "--height": "48%" }}>refactor</span>
-            <span style={{ "--height": "28%" }}>docs</span>
-          </div>
+          <MessageTypeBarChart data={messageStats} />
           <button type="button" onClick={() => notify.info("모든 메시지를 내보냅니다.")}>모두 복사하기</button>
         </aside>
       </section>

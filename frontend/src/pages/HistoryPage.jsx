@@ -1,10 +1,17 @@
+import ActivityLineChart from "@components/charts/ActivityLineChart";
+import ChangeTypeDonutChart from "@components/charts/ChangeTypeDonutChart";
 import PageShell from "@pages/PageShell";
 
 const historyItems = [
-  ["ai-commit-analyzer", "Git 산출물 업로드", "분석 완료", "2024.06.26", "128", "42"],
-  ["backend-server", "GitHub 연동", "분석 완료", "2024.06.24", "86", "31"],
-  ["frontend-app", "GitHub 연동", "분석 중", "2024.06.22", "104", "28"],
-  ["docs", "Git 산출물 업로드", "분석 대기", "2024.06.20", "-", "-"],
+  ["ai-commit-analyzer", "Git 산출물 업로드", "분석 완료", "2026.06.30", "128", "42"],
+  ["backend-server", "GitHub 연동", "분석 완료", "2026.06.29", "86", "31"],
+  ["frontend-app", "GitHub 연동", "분석 중", "2026.06.28", "104", "28"],
+  ["docs", "Git 산출물 업로드", "분석 대기", "2026.06.27", "-", "-"],
+];
+
+const sourceTypes = [
+  { name: "Git 산출물", value: 50 },
+  { name: "GitHub 연동", value: 50 },
 ];
 
 const HistoryPage = ({ currentPage, onNavigate }) => {
@@ -13,16 +20,11 @@ const HistoryPage = ({ currentPage, onNavigate }) => {
       <section className="history-grid">
         <article className="page-card history-summary">
           <h2>최근 30일 분석 현황</h2>
-          <div className="line-chart compact" aria-label="최근 30일 분석 현황">
-            {[24, 44, 32, 68, 48, 76, 58, 82].map((height, index) => (
-              <span style={{ "--height": `${height}%` }} key={index} />
-            ))}
-          </div>
+          <ActivityLineChart values={[24, 44, 32, 68, 48, 76, 58, 82]} />
         </article>
         <article className="page-card history-summary">
           <h2>분석 방식 비율</h2>
-          <div className="donut-chart small"><span>2:2</span></div>
-          <p>Git 산출물 업로드와 GitHub 연동을 모두 지원합니다.</p>
+          <ChangeTypeDonutChart data={sourceTypes} />
         </article>
       </section>
 

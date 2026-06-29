@@ -5,11 +5,11 @@ from typing import Any
 import asyncpg
 from fastapi import HTTPException, Response, status
 
-from app.core.config import get_auth_config
-from app.core.security import create_session_id, verify_password
-from app.utils.db import create_user, find_user_by_email
-from app.utils.rediscl import delete_session, get_session, set_session
-from app.utils.tokenset import create_login_token, read_login_token
+from core.security import create_session_id, verify_password
+from core.settings import settings
+from utils.db import create_user, find_user_by_email
+from utils.rediscl import delete_session, get_session, set_session
+from utils.tokenset import create_login_token, read_login_token
 
 
 def user_payload(user: asyncpg.Record) -> dict[str, Any]:
@@ -50,19 +50,18 @@ async def register_user(
 
 
 async def issue_login_cookie(response: Response, user: asyncpg.Record) -> None:
-    auth_config = get_auth_config()
-    ttl_seconds = int(auth_config["session_ttl_seconds"])
+    ttl_seconds = settings.session_ttl_seconds
     uuid = create_session_id()
     token = create_login_token(uuid, user["id"])
 
     await set_session(uuid, user_payload(user), ttl_seconds)
 
     response.set_cookie(
-        key=str(auth_config["cookie_name"]),
+        key=settings.auth_cookie_name,
         value=token,
         max_age=ttl_seconds,
         httponly=True,
-        secure=bool(auth_config["secure_cookie"]),
+        secure=settings.secure_cookie,
         samesite="lax",
         path="/",
     )
@@ -85,7 +84,6 @@ async def get_current_user(token: str | None) -> dict[str, Any]:
 
 
 async def clear_login_cookie(response: Response, token: str | None) -> None:
-    auth_config = get_auth_config()
     if token:
         try:
             payload = read_login_token(token)
@@ -93,4 +91,4 @@ async def clear_login_cookie(response: Response, token: str | None) -> None:
         except Exception:
             pass
 
-    response.delete_cookie(key=str(auth_config["cookie_name"]), path="/")
+    response.delete_cookie(key=settings.auth_cookie_name, path="/")

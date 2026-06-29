@@ -5,12 +5,11 @@ from typing import Any
 
 from redis.asyncio import Redis
 
-from app.core.config import get_service_config
+from core.settings import settings
 
 
 def redis_client() -> Redis:
-    config = get_service_config()
-    return Redis.from_url(config["redis"], decode_responses=True)
+    return Redis.from_url(settings.redis_url, decode_responses=True)
 
 
 async def set_session(uuid: str, user: dict[str, Any], ttl_seconds: int) -> None:

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.schemas.projects import ProjectCreate, ProjectSummary
+from schemas.projects import ProjectCreate, ProjectSummary
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 

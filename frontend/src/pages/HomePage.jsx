@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ActivityLineChart from "@components/charts/ActivityLineChart";
 import AppLayout from "@components/layout/AppLayout";
 import AnalysisStartDialog from "@components/analysis/AnalysisStartDialog";
 import { mockOrEmpty, useMocks } from "@utils/mockConfig";
@@ -37,7 +38,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
     <AppLayout currentPage={currentPage} onNavigate={onNavigate}>
       <header className="home-hero">
         <div>
-          <span>{useMocks ? "Mock 데이터 사용 중" : "실데이터 모드"}</span>
+          <span>{useMocks ? "더미 데이터 사용 중" : "실데이터 모드"}</span>
           <h1>이채훈님, 오늘의 커밋 흐름을 확인해보세요.</h1>
           <p>Git 산출물 업로드와 GitHub 연동 분석을 한 화면에서 시작하고 추적합니다.</p>
         </div>
@@ -67,11 +68,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
               <option value="github">GitHub 연동</option>
             </select>
           </div>
-          <div className="line-chart" aria-label="커밋 활동 트렌드">
-            {chartSets[chartMode].map((height, index) => (
-              <span style={{ "--height": `${height}%` }} key={index} />
-            ))}
-          </div>
+          <ActivityLineChart values={chartSets[chartMode]} />
         </article>
 
         <article className="page-card home-list-card">

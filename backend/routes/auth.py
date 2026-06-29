@@ -5,15 +5,15 @@ from typing import Annotated
 from fastapi import APIRouter, Cookie, Response
 from pydantic import BaseModel, EmailStr, Field
 
-from app.core.config import get_auth_config
-from app.utils.auth import (
+from core.settings import settings
+from utils.auth import (
     authenticate_or_create_user,
     clear_login_cookie,
     get_current_user,
     issue_login_cookie,
     register_user,
 )
-from app.utils.db import connect_db
+from utils.db import connect_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -73,7 +73,7 @@ async def signup(payload: AuthRequest, response: Response) -> AuthResponse:
 
 @router.get("/me", response_model=AuthResponse)
 async def me(
-    token: Annotated[str | None, Cookie(alias=get_auth_config()["cookie_name"])] = None,
+    token: Annotated[str | None, Cookie(alias=settings.auth_cookie_name)] = None,
 ) -> AuthResponse:
     user = await get_current_user(token)
     return to_auth_response(user)
@@ -82,7 +82,7 @@ async def me(
 @router.post("/logout")
 async def logout(
     response: Response,
-    token: Annotated[str | None, Cookie(alias=get_auth_config()["cookie_name"])] = None,
+    token: Annotated[str | None, Cookie(alias=settings.auth_cookie_name)] = None,
 ) -> dict[str, bool]:
     await clear_login_cookie(response, token)
     return {"ok": True}
