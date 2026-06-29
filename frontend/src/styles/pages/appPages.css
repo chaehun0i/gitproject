@@ -355,10 +355,20 @@
   margin-bottom: 20px;
 }
 
+.project-toolbar button.active {
+  color: #ffffff;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
 .repo-card {
   display: grid;
   gap: 16px;
   min-height: 286px;
+}
+
+.project-card-grid.list-mode {
+  grid-template-columns: 1fr;
 }
 
 .repo-card.selected {
@@ -452,6 +462,21 @@ pre {
   padding: 18px;
   color: #dbeafe;
   background: #0f172a;
+}
+
+.tab-panel {
+  min-height: 490px;
+  padding: 24px;
+}
+
+.tab-panel h2 {
+  margin: 0 0 14px;
+}
+
+.empty-state,
+.empty-text {
+  color: var(--muted);
+  line-height: 1.7;
 }
 
 .message-card {
