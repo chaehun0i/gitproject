@@ -4,12 +4,13 @@ from collections.abc import Iterable
 
 from fastapi import APIRouter, FastAPI
 
-from app.routes import analysis_runs, health, projects, services
+from app.routes import analysis_runs, auth, health, projects, services
 
 
 def route_set() -> Iterable[APIRouter]:
     return (
         health.router,
+        auth.router,
         services.router,
         projects.router,
         analysis_runs.router,

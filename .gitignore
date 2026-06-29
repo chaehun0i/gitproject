@@ -13,4 +13,8 @@ htmlcov/
 .idea/
 .vscode/
 docker-data/
-
+docs/logs/
+frontend/dist/
+frontend/node_modules/
+.env*
+.env.example

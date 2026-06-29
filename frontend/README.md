@@ -1,24 +1,25 @@
-# 프론트엔드
+# AI Commit Analyzer Frontend
 
-현재 프론트엔드는 JavaScript 없이 정적 HTML/CSS만 유지합니다.
+Vite + React 기반 프론트엔드입니다.
 
-프론트엔드 API 연결은 FastAPI MVP API가 정리된 뒤 다시 추가합니다.
+## 기준
 
-## Nginx 연결
+- import 경로는 `vite.config.js`의 alias를 사용합니다.
+- 브라우저 기본 `alert()` 대신 앱 내부 커스텀 알럿을 사용합니다.
+- 컴포넌트와 핸들러는 `const` 기반 화살표 함수로 작성합니다.
+- 처음부터 파일을 과하게 나누지 않고, 파일이 커지거나 재사용 지점이 생길 때 분리합니다.
 
-Docker로 프론트엔드를 올리면 Nginx가 정적 파일을 서빙합니다.
-
-또한 `/api/` 요청은 같은 Docker 네트워크의 FastAPI 백엔드로 프록시합니다.
+## 현재 구조
 
 ```text
-browser
-  -> frontend nginx
-  -> /api/*
-  -> backend:8000
+src/
+  assets/
+  components/
+    common/
+  styles/
+    global.css
+  App.jsx
+  main.jsx
 ```
 
-## Docker 실행
-
-```bash
-docker compose --profile frontend up -d frontend
-```
+기능이 커지면 `components/project`, `components/commit`, `components/analysis`, `pages`, `services`, `stores`, `utils` 순서로 확장합니다.
