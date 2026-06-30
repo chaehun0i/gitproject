@@ -1,4 +1,5 @@
 import MessageTypeBarChart from "@components/charts/MessageTypeBarChart";
+import { useState } from "react";
 import PageShell from "@pages/PageShell";
 import { notify } from "@utils/feedback";
 
@@ -7,7 +8,7 @@ const recommendedMessages = [
     text: "feat(auth): 로그인 세션 refresh 플로우 추가",
     type: "feat",
     scope: "auth",
-    reason: "새로고침 후 로그인 유지와 Redis 세션 갱신 흐름이 추가되었습니다.",
+    reason: "새로고침 후에도 로그인 상태를 유지하는 흐름이 추가되었습니다.",
   },
   {
     text: "fix(auth): refresh 실패 시 인증 상태 복구 처리 개선",
@@ -37,7 +38,28 @@ const messageStats = [
   { name: "chore", value: 16 },
 ];
 
+const messageItems = [
+  ...recommendedMessages,
+  {
+    text: "test(auth): 로그인 유지 흐름 검증 추가",
+    type: "test",
+    scope: "auth",
+    reason: "로그인 유지와 새로고침 복구 흐름을 테스트로 확인하는 작업입니다.",
+  },
+  {
+    text: "chore(ui): 분석 화면 버튼 스타일 정리",
+    type: "chore",
+    scope: "ui",
+    reason: "분석 흐름에서 반복되는 버튼 스타일을 같은 톤으로 맞춘 작업입니다.",
+  },
+];
+
 const CommitMessagePage = ({ currentPage, onNavigate }) => {
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+  const totalPages = Math.max(1, Math.ceil(messageItems.length / pageSize));
+  const visibleMessages = messageItems.slice((page - 1) * pageSize, page * pageSize);
+
   const copyMessage = (message) => {
     navigator.clipboard?.writeText(message);
     notify.success("커밋 메시지를 복사했습니다.");
@@ -52,7 +74,7 @@ const CommitMessagePage = ({ currentPage, onNavigate }) => {
     >
       <section className="commit-message-layout refined-message-layout">
         <div className="message-list">
-          {recommendedMessages.map((message, index) => (
+          {visibleMessages.map((message, index) => (
             <article className={index === 0 ? "message-card selected-message" : "message-card"} key={message.text}>
               <div className="message-card-head">
                 <span className="recommend-badge">AI 추천 {index + 1}</span>
@@ -67,6 +89,11 @@ const CommitMessagePage = ({ currentPage, onNavigate }) => {
               </div>
             </article>
           ))}
+          <div className="pagination-row compact">
+            <button disabled={page === 1} type="button" onClick={() => setPage((value) => Math.max(1, value - 1))}>이전</button>
+            <span>{page} / {totalPages}</span>
+            <button disabled={page === totalPages} type="button" onClick={() => setPage((value) => Math.min(totalPages, value + 1))}>다음</button>
+          </div>
         </div>
 
         <aside className="page-card commit-side-card refined-commit-side">

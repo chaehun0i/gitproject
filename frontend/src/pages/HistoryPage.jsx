@@ -16,24 +16,35 @@ const sourceTypes = [
   { name: "GitHub 연동", value: 50 },
 ];
 
+const extraHistoryItems = [
+  { project: "utils-library", branch: "feature/refactor", source: "GitHub", status: "분석 완료", commits: "52", files: "18", runtime: "1분 50초", createdAt: "2026.06.26" },
+  { project: "mobile-client", branch: "release", source: "GitHub", status: "분석 완료", commits: "64", files: "22", runtime: "2분 10초", createdAt: "2026.06.25" },
+  { project: "admin-console", branch: "main", source: "Git 산출물", status: "분석 대기", commits: "-", files: "-", runtime: "-", createdAt: "2026.06.24" },
+];
+
 const HistoryPage = ({ currentPage, onNavigate }) => {
   const [keyword, setKeyword] = useState("");
   const [status, setStatus] = useState("전체 상태");
+  const [page, setPage] = useState(1);
 
   const filteredHistory = useMemo(() => {
-    return historyItems.filter((item) => {
+    return [...historyItems, ...extraHistoryItems].filter((item) => {
       const matchesKeyword = `${item.project} ${item.branch}`.toLowerCase().includes(keyword.toLowerCase());
       const matchesStatus = status === "전체 상태" || item.status === status;
       return matchesKeyword && matchesStatus;
     });
   }, [keyword, status]);
 
+  const pageSize = 5;
+  const totalPages = Math.max(1, Math.ceil(filteredHistory.length / pageSize));
+  const visibleHistory = filteredHistory.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <PageShell
       currentPage={currentPage}
       onNavigate={onNavigate}
       title="분석 내역"
-      description="DB에 저장된 과거 분석 결과를 다시 조회하는 화면입니다."
+      description="과거 분석 결과를 다시 조회하는 화면입니다."
     >
       <section className="history-grid">
         <article className="page-card history-summary">
@@ -79,7 +90,7 @@ const HistoryPage = ({ currentPage, onNavigate }) => {
               <span>실행 시간</span>
               <span>결과</span>
             </div>
-            {filteredHistory.map((item) => (
+            {visibleHistory.map((item) => (
               <div className="table-row" key={`${item.project}-${item.createdAt}`}>
                 <div>
                   <b>{item.project}</b>
@@ -91,6 +102,11 @@ const HistoryPage = ({ currentPage, onNavigate }) => {
                 <button type="button" onClick={() => onNavigate(item.status === "분석 중" ? "progress" : "result")}>보기</button>
               </div>
             ))}
+            <div className="pagination-row compact">
+              <button disabled={page === 1} type="button" onClick={() => setPage((value) => Math.max(1, value - 1))}>이전</button>
+              <span>{page} / {totalPages}</span>
+              <button disabled={page === totalPages} type="button" onClick={() => setPage((value) => Math.min(totalPages, value + 1))}>다음</button>
+            </div>
           </>
         )}
       </section>

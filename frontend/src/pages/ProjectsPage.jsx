@@ -92,6 +92,40 @@ const mockProjects = [
     progress: 100,
     starred: false,
   },
+  {
+    id: "mobile-client",
+    name: "mobile-client",
+    owner: "chaehoon",
+    repo: "mobile-client",
+    source: "GitHub",
+    visibility: "private",
+    branch: "release",
+    language: "React Native",
+    updated: "2주 전",
+    status: "분석 완료",
+    commits: "214",
+    files: "96",
+    insights: "9",
+    progress: 100,
+    starred: false,
+  },
+  {
+    id: "admin-console",
+    name: "admin-console",
+    owner: "chaehoon",
+    repo: "admin-console",
+    source: "Git 산출물",
+    visibility: "private",
+    branch: "main",
+    language: "React",
+    updated: "3주 전",
+    status: "분석 대기",
+    commits: "-",
+    files: "-",
+    insights: "-",
+    progress: 0,
+    starred: false,
+  },
 ];
 
 const statusClass = {
@@ -104,7 +138,8 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
   const [keyword, setKeyword] = useState("");
   const [status, setStatus] = useState("전체 상태");
   const [sort, setSort] = useState("최근 분석 순");
-  const [viewMode, setViewMode] = useState("grid");
+  const [viewMode, setViewMode] = useState("list");
+  const [page, setPage] = useState(1);
   const projects = mockOrEmpty(mockProjects);
 
   const filteredProjects = useMemo(() => {
@@ -121,11 +156,16 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
     });
   }, [keyword, projects, sort, status]);
 
+  const pageSize = 5;
+  const totalPages = Math.max(1, Math.ceil(filteredProjects.length / pageSize));
+  const visibleProjects = filteredProjects.slice((page - 1) * pageSize, page * pageSize);
+
   const removeProject = (name) => {
     confirmAction({
-      title: `${name} 프로젝트를 목록에서 제거할까요?`,
-      text: "분석 결과는 보존하고 프로젝트 목록에서만 숨깁니다.",
+      title: "프로젝트를 목록에서 제거할까요?",
+      text: "분석 기록은 유지되며, 연결된 저장소만 목록에서 숨겨집니다.",
       confirmButtonText: "제거",
+      cancelButtonText: "취소",
     });
   };
 
@@ -135,10 +175,9 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
         <div>
           <span className="title-icon">R</span>
           <h1>내 프로젝트</h1>
-          <p>연결된 저장소와 Git 산출물 분석 프로젝트를 한 곳에서 관리합니다.</p>
+          <p>연결된 프로젝트와 최근 분석 상태를 관리합니다.</p>
         </div>
         <div className="project-actions">
-          <AnalysisStartDialog onStart={() => onNavigate("progress")} trigger={<button type="button">프로젝트 연결</button>} />
           <AnalysisStartDialog onStart={() => onNavigate("progress")} trigger={<button type="button">새 분석 시작</button>} />
         </div>
       </header>
@@ -182,15 +221,15 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
             </div>
           ) : (
             <div className={viewMode === "list" ? "project-card-grid list-mode" : "project-card-grid"}>
-              {filteredProjects.map((project) => (
+              {visibleProjects.map((project) => (
                 <article className={project.starred ? "repo-card selected refined-repo" : "repo-card refined-repo"} key={project.id}>
                   <div className="repo-head">
-                    <span className="github-mark">{project.source === "GitHub" ? "GH" : "GIT"}</span>
+                    <span className="github-mark">{project.source === "GitHub" ? "Repo" : "Git"}</span>
                     <div>
                       <h2>{project.name}</h2>
                       <p>{project.owner}/{project.repo} · {project.visibility} · {project.branch}</p>
                     </div>
-                    <button type="button" aria-label="더보기">⋯</button>
+                    <button className="repo-more-button" type="button" aria-label="더보기">더보기</button>
                   </div>
 
                   <div className="repo-meta-row">
@@ -221,12 +260,19 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
               ))}
             </div>
           )}
+          {filteredProjects.length > pageSize ? (
+            <div className="pagination-row">
+              <button disabled={page === 1} type="button" onClick={() => setPage((value) => Math.max(1, value - 1))}>이전</button>
+              <span>{page} / {totalPages}</span>
+              <button disabled={page === totalPages} type="button" onClick={() => setPage((value) => Math.min(totalPages, value + 1))}>다음</button>
+            </div>
+          ) : null}
         </div>
 
         <aside className="project-help refined-help">
           <RepositoryEmptyVisual />
           <h2>분석 시작 가이드</h2>
-          <p>포트폴리오 데모에서도 실제 백엔드 파이프라인의 입력 방식을 이해할 수 있게 두 가지 분석 흐름을 분리했습니다.</p>
+          <p>프로젝트를 선택하고 필요한 옵션만 고르면 분석을 시작할 수 있습니다.</p>
           {[
             ["1", "저장소 연결", "GitHub 저장소를 연결하거나 Git 산출물을 준비합니다."],
             ["2", "분석 설정", "브랜치, 커밋 범위, 분석 옵션을 선택합니다."],

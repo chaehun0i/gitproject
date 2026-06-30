@@ -1,5 +1,4 @@
 import ActivityLineChart from "@components/charts/ActivityLineChart";
-import { InsightVisual, ProductHeroVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
 import productVisual from "@assets/images/commitlens-product-visual.png";
 
@@ -12,23 +11,23 @@ const kpis = [
 ];
 
 const recentProjects = [
-  ["ai-commit-analyzer", "Git 산출물 업로드 · feature/FE_all", "분석 완료", "2시간 전", 92],
-  ["backend-server", "GitHub 연동 · develop", "분석 완료", "5시간 전", 86],
-  ["frontend-app", "GitHub 연동 · main", "분석 중", "1시간 전", 68],
-  ["docs", "Git 산출물 업로드 · main", "대기 중", "3시간 전", 0],
+  ["ai-commit-analyzer", "파일 업로드", "feature/FE_all", "분석 완료", "2시간 전", 92],
+  ["backend-server", "저장소 연결", "develop", "분석 완료", "5시간 전", 86],
+  ["frontend-app", "저장소 연결", "main", "분석 중", "1시간 전", 68],
+  ["docs", "파일 업로드", "main", "대기 중", "3시간 전", 0],
 ];
 
 const insights = [
-  ["인증 흐름 개선", "토큰 갱신과 새로고침 복구 로직이 추가되어 로그인 유지 UX가 좋아졌습니다."],
-  ["리팩토링 제안", "분석 결과 카드와 상태 배지를 공통 패턴으로 묶으면 유지보수가 쉬워집니다."],
-  ["위험 변경 감지", "API 응답 스키마와 Redis 세션 TTL 변경은 통합 테스트 우선순위가 높습니다."],
+  ["검토할 변경", "로그인 유지와 화면 구성 변경은 먼저 확인하면 좋습니다."],
+  ["정리된 변경", "최근 작업은 인증 화면과 분석 화면 개선에 집중되어 있습니다."],
+  ["추천 메시지", "변경 흐름에 맞는 커밋 메시지 후보가 준비되었습니다."],
 ];
 
 const quickStart = [
-  ["1", "GitHub 연결", "저장소를 연결하거나 Git 산출물을 업로드합니다."],
+  ["1", "프로젝트 선택", "저장소를 연결하거나 변경 파일을 업로드합니다."],
   ["2", "분석 옵션 선택", "요약, 위험 감지, 메시지 추천을 선택합니다."],
-  ["3", "AI 분석 실행", "WebSocket 진행률로 파이프라인 상태를 확인합니다."],
-  ["4", "결과 활용", "리뷰 포인트와 추천 메시지를 복사해 사용합니다."],
+  ["3", "분석 실행", "진행 상태를 확인하며 결과를 기다립니다."],
+  ["4", "결과 활용", "검토할 변경과 추천 메시지를 확인합니다."],
 ];
 
 const HomePage = ({ currentPage, onNavigate }) => {
@@ -36,16 +35,15 @@ const HomePage = ({ currentPage, onNavigate }) => {
     <PageShell
       currentPage={currentPage}
       onNavigate={onNavigate}
-      title="AI 개발 분석 Workspace"
-      description="커밋, diff, 파일 변경, AI 요약 결과를 한 곳에서 확인합니다."
+      title="작업 공간"
+      description="최근 분석과 검토할 변경 사항을 한 곳에서 확인합니다."
     >
       <section className="workspace-hero">
         <div className="workspace-hero-copy">
-          <span className="recommend-badge">CommitLens Workspace</span>
+          <span className="recommend-badge">최근 작업</span>
           <h2>커밋을 분석하고, 더 나은 개발을 만들어가세요</h2>
           <p>
-            Git Parser와 Diff Parser가 수집한 변경 내용을 AI가 해석하고, DB 집계 결과를
-            프로젝트별 인사이트와 추천 커밋 메시지로 보여줍니다.
+            최근 변경 내용을 정리하고, 검토할 항목과 추천 커밋 메시지를 빠르게 확인하세요.
           </p>
           <div className="hero-actions">
             <button type="button" onClick={() => onNavigate("newAnalysis")}>새 분석 시작</button>
@@ -55,13 +53,13 @@ const HomePage = ({ currentPage, onNavigate }) => {
         <div className="workspace-hero-visual" aria-hidden="true">
           <img alt="" src={productVisual} />
           <div className="hero-mini-card">
-            <b>AI 분석 진행</b>
-            <span>변경 파일 42개 · 위험 포인트 8개</span>
+            <b>최근 분석</b>
+            <span>변경 파일 42개 · 검토 항목 8개</span>
           </div>
           <div className="hero-checklist">
-            <span>커밋 수집 완료</span>
-            <span>Diff Parser 완료</span>
-            <span>AI 요약 생성 중</span>
+            <span>변경 내용 확인</span>
+            <span>요약 준비</span>
+            <span>메시지 추천 중</span>
           </div>
         </div>
       </section>
@@ -82,12 +80,12 @@ const HomePage = ({ currentPage, onNavigate }) => {
             <h2>최근 분석 프로젝트</h2>
             <button type="button" onClick={() => onNavigate("projects")}>전체 보기</button>
           </div>
-          {recentProjects.map(([name, meta, status, time, progress]) => (
+          {recentProjects.map(([name, source, branch, status, time, progress]) => (
             <div className="home-project-row" key={name}>
-              <span>GH</span>
+              <span>{source === "저장소 연결" ? "Repo" : "Git"}</span>
               <div>
                 <b>{name}</b>
-                <small>{meta}</small>
+                <small>{source} · {branch} · {time}</small>
               </div>
               <em className={status === "분석 완료" ? "done-label" : "wait-label"}>{status}</em>
               <div>
@@ -110,10 +108,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
       <section className="workspace-bottom-grid">
         <article className="page-card ai-insight-workspace">
           <div>
-            <InsightVisual />
-          </div>
-          <div>
-            <h2>AI 인사이트 요약</h2>
+            <h2>검토할 변경 요약</h2>
             <div className="summary-points">
               {insights.map(([title, text]) => (
                 <span key={title}><b>{title}</b>{text}</span>

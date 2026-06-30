@@ -5,10 +5,8 @@ import PageShell from "@pages/PageShell";
 const settingsIntegrations = [
   ["GitHub", "저장소 연동 준비", "연동 가능", "ready"],
   ["Git 산출물", "diff, patch, log 업로드", "사용 가능", "ready"],
-  ["MariaDB", "127.0.0.1:3307 / app", "연결 기준", "ready"],
-  ["Redis", "JWE uuid 세션 유지", "백엔드 연동", "ready"],
-  ["PostgreSQL", "pgdb 보조 컨테이너", "대기", "standby"],
-  ["AI Runtime", "요약/추천 메시지 생성", "Mock 가능", "standby"],
+  ["분석 기록", "분석 결과 다시 보기", "준비됨", "ready"],
+  ["알림", "분석 완료와 검토 항목 안내", "설정 가능", "standby"],
 ];
 
 const MyPage = ({ currentPage, onNavigate }) => {
@@ -32,9 +30,9 @@ const MyPage = ({ currentPage, onNavigate }) => {
 
         <article className="settings-env-panel runtime-banner-card">
           <div>
-            <span>Local Runtime</span>
-            <b>MariaDB 3307 · Redis Session</b>
-            <p>백엔드는 로컬에서 실행하고, DB 컨테이너는 Docker Desktop에서 관리하는 흐름을 기준으로 표시합니다.</p>
+            <span>작업 환경</span>
+            <b>분석 준비 완료</b>
+            <p>프로젝트를 선택하면 최근 변경 내용을 분석하고 결과를 확인할 수 있습니다.</p>
           </div>
           <RuntimeVisual />
         </article>
@@ -76,7 +74,7 @@ const MyPage = ({ currentPage, onNavigate }) => {
           <div className="settings-summary-grid">
             <div><span>API Base URL</span><b>/api</b></div>
             <div><span>Mock Data</span><b>VITE_USE_MOCKS</b></div>
-            <div><span>Session</span><b>JWE + Redis</b></div>
+            <div><span>로그인 유지</span><b>사용 가능</b></div>
           </div>
           <SettingsDialog trigger={<button type="button">긴 설정창 열기</button>} title="API 설정">
             <label>API Endpoint<input placeholder="https://api.example.com" /></label>

@@ -45,6 +45,127 @@
   background: #eef2ff;
 }
 
+.dialog-head [data-radix-dialog-description] {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.analysis-stepper {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.analysis-stepper span {
+  min-height: 34px;
+  padding: 9px 10px;
+  border: 1px solid #dfe7f7;
+  border-radius: 8px;
+  color: #64748b;
+  background: #f8fbff;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.analysis-stepper span.active {
+  color: #ffffff;
+  border-color: transparent;
+  background: var(--gradient-ai);
+}
+
+.analysis-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.analysis-type-card {
+  display: grid;
+  gap: 8px;
+  min-height: 112px;
+  padding: 18px;
+  border: 1px solid #dfe7f7;
+  border-radius: 10px;
+  color: var(--text);
+  background: #fbfdff;
+  text-align: left;
+}
+
+.analysis-type-card.active {
+  border-color: rgba(79, 70, 229, 0.48);
+  background: #f5f3ff;
+  box-shadow: 0 12px 26px rgba(79, 70, 229, 0.1);
+}
+
+.compact-check-list {
+  display: grid;
+  gap: 10px;
+}
+
+.compact-check-list.inline {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compact-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e5eaf2;
+  border-radius: 9px;
+  background: #fbfdff;
+}
+
+.compact-check-row input {
+  min-height: auto;
+  margin-top: 4px;
+}
+
+.compact-check-row b,
+.compact-check-row small {
+  display: block;
+}
+
+.compact-check-row small {
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.dialog-summary-card {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid rgba(79, 70, 229, 0.16);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7f8ff);
+}
+
+.dialog-summary-card h3,
+.dialog-summary-card p {
+  margin: 0;
+}
+
+.dialog-summary-card > span,
+.dialog-summary-card em {
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: #eef2ff;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 0.78rem;
+}
+
+.dialog-summary-card div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .analysis-tabs {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -116,6 +237,10 @@
   gap: 12px;
 }
 
+.dialog-actions.space-between {
+  justify-content: space-between;
+}
+
 .outline-action {
   min-height: 42px;
   padding: 0 16px;
@@ -146,4 +271,17 @@
 .check-row input {
   min-height: auto;
   margin-top: 5px;
+}
+
+.command-help.compact,
+.upload-box.compact {
+  min-height: auto;
+}
+
+@media (max-width: 640px) {
+  .analysis-stepper,
+  .analysis-type-grid,
+  .compact-check-list.inline {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,13 +1,12 @@
 import { useMemo, useState } from "react";
 import AnalysisStartDialog from "@components/analysis/AnalysisStartDialog";
-import { PipelineVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
 
 const analysisOptions = [
-  ["summary", "코드 변경 요약", "파일별 변경 의도와 핵심 변경 사항을 요약합니다."],
-  ["risk", "위험 변경 감지", "인증, DB, 환경 변수처럼 주의가 필요한 변경을 감지합니다."],
-  ["message", "커밋 메시지 추천", "Conventional Commit 형식으로 메시지 후보를 제안합니다."],
-  ["refactor", "리팩토링 포인트", "중복 코드, 구조 개선, 테스트 보강 포인트를 찾습니다."],
+  ["summary", "변경 요약", "파일별 변경 흐름과 핵심 내용을 정리합니다."],
+  ["risk", "검토 항목 찾기", "주의해서 확인하면 좋은 변경을 표시합니다."],
+  ["message", "커밋 메시지 추천", "변경 내용에 맞는 메시지 후보를 제안합니다."],
+  ["refactor", "개선 포인트", "정리하면 좋은 중복 코드와 구조를 찾아줍니다."],
 ];
 
 const commandGuide = [
@@ -39,7 +38,7 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
       currentPage={currentPage}
       onNavigate={onNavigate}
       title="새 분석 시작"
-      description="GitHub 연동 또는 Git 명령어 산출물 업로드 방식으로 분석을 실행합니다."
+      description="저장소 연결 또는 파일 업로드 방식으로 변경 내용을 분석합니다."
     >
       <section className="analysis-workspace">
         <div className="analysis-start-card refined-analysis-card">
@@ -47,15 +46,15 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
             <span className="section-number">1</span>
             <div>
               <h2>분석 방식 선택</h2>
-              <p>포트폴리오 데모에서도 백엔드 입력 구조가 보이도록 GitHub 연동과 Git 산출물 업로드를 분리했습니다.</p>
+              <p>프로젝트 상황에 맞게 저장소 연결 분석과 Git 산출물 업로드 분석 중 하나를 선택합니다.</p>
               <div className="source-choice-grid">
                 <button className={sourceType === "github" ? "source-choice active" : "source-choice"} type="button" onClick={() => setSourceType("github")}>
-                  <b>GitHub 저장소 연동 분석</b>
-                  <small>저장소, 브랜치, 커밋 범위를 선택해 GitHub API 기반 분석을 실행합니다.</small>
+                  <b>GitHub 저장소 분석</b>
+                  <small>연결된 저장소, 브랜치, 기간을 선택해 분석합니다.</small>
                 </button>
                 <button className={sourceType === "upload" ? "source-choice active" : "source-choice"} type="button" onClick={() => setSourceType("upload")}>
-                  <b>Git 명령어 산출물 업로드 분석</b>
-                  <small>사용자가 저장한 log, diff, patch, 변경 파일 목록을 업로드해 분석합니다.</small>
+                  <b>Git 산출물 업로드 분석</b>
+                  <small>직접 저장한 log, diff, patch 파일을 업로드합니다.</small>
                 </button>
               </div>
             </div>
@@ -64,7 +63,7 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
           <article className="analysis-section">
             <span className="section-number">2</span>
             <div>
-              <h2>저장소와 범위</h2>
+              <h2>대상과 범위</h2>
               <div className="form-grid-2">
                 <label>
                   프로젝트
@@ -97,12 +96,14 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
             <span className="section-number">3</span>
             <div>
               <h2>분석 옵션</h2>
-              <div className="analysis-option-grid">
+              <div className="compact-check-list inline">
                 {analysisOptions.map(([key, title, text]) => (
-                  <label className="option-card" key={key}>
+                  <label className="compact-check-row" key={key}>
                     <input checked={options.includes(key)} type="checkbox" onChange={() => toggleOption(key)} />
-                    <b>{title}</b>
-                    <small>{text}</small>
+                    <span>
+                      <b>{title}</b>
+                      <small>{text}</small>
+                    </span>
                   </label>
                 ))}
               </div>
@@ -114,7 +115,7 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
               <span className="section-number">4</span>
               <div>
                 <h2>업로드 가이드</h2>
-                <p>민감한 토큰, 비밀번호, 운영 환경 변수는 업로드 전에 제거하는 것을 권장합니다.</p>
+                <p>민감한 토큰, 비밀번호, 운영 환경 값은 업로드 전에 제거하는 것을 권장합니다.</p>
                 <div className="command-help">
                   {commandGuide.map((command) => <code key={command}>{command}</code>)}
                 </div>
@@ -124,20 +125,20 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
 
           <AnalysisStartDialog
             onStart={() => onNavigate("progress")}
-            trigger={<button className="analysis-submit" type="button">약관 확인 후 분석 시작</button>}
+            trigger={<button className="analysis-submit" type="button">설정 확인 후 분석 시작</button>}
           />
         </div>
 
         <aside className="analysis-preview-card">
-          <PipelineVisual />
           <h2>분석 미리보기</h2>
-          <div className="preview-row"><span>입력 방식</span><b>{sourceType === "upload" ? "Git 산출물 업로드" : "GitHub 저장소 연동"}</b></div>
+          <p>선택한 옵션에 맞춰 변경 요약과 추천 메시지를 준비합니다.</p>
+          <div className="preview-row"><span>입력 방식</span><b>{sourceType === "upload" ? "Git 산출물 업로드" : "GitHub 저장소 연결"}</b></div>
           <div className="preview-row"><span>분석 범위</span><b>{range}</b></div>
           <div className="preview-row"><span>분석 옵션</span><b>{selectedOptionText || "선택 없음"}</b></div>
           <div className="summary-points">
-            <span>Git Parser가 커밋 로그를 구조화합니다.</span>
-            <span>Diff Parser가 파일별 변경 라인을 추출합니다.</span>
-            <span>AI Analyzer가 위험도와 추천 메시지를 생성합니다.</span>
+            <span>커밋 기록을 작업 단위로 정리합니다.</span>
+            <span>파일별 변경 내용을 한눈에 볼 수 있게 묶습니다.</span>
+            <span>분석 결과에 맞는 메시지 후보를 생성합니다.</span>
           </div>
         </aside>
       </section>

@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { logout as logoutAction } from "@stores/slices/authSlice";
+import commitlensLogo from "@assets/images/commitlens-logo.png";
 import { logoutUser } from "../../api";
 import { notify } from "@utils/feedback";
 import "@styles/layout/sidebar.css";
@@ -8,10 +9,10 @@ const navGroups = [
   {
     label: "Workspace",
     items: [
-      ["home", "홈", "⌘"],
+      ["home", "홈", "H"],
       ["projects", "프로젝트", "R"],
       ["newAnalysis", "새 분석", "+"],
-      ["history", "분석 내역", "H"],
+      ["history", "분석 내역", "L"],
     ],
   },
   {
@@ -49,11 +50,7 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
     <aside className="sidebar">
       <div className="sidebar-head">
         <button className="brand" type="button" onClick={() => onNavigate("home")} title="CommitLens 홈">
-          <span className="brand-mark">&lt;/&gt;</span>
-          <div>
-            <strong>CommitLens</strong>
-            <p>AI Git 분석 워크스페이스</p>
-          </div>
+          <img className="brand-logo-image" alt="CommitLens" src={commitlensLogo} />
         </button>
         <button
           className="sidebar-toggle"
@@ -62,15 +59,15 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
           onClick={onToggle}
           title={isCollapsed ? "펼치기" : "접기"}
         >
-          {isCollapsed ? "→" : "←"}
+          {isCollapsed ? "›" : "‹"}
         </button>
       </div>
 
       <div className="sidebar-status">
         <span />
         <div>
-          <b>Local Runtime</b>
-          <p>MariaDB 3307 · Redis · API /api</p>
+          <b>분석 준비 완료</b>
+          <p>프로젝트를 선택해 분석을 시작하세요</p>
         </div>
       </div>
 
@@ -95,11 +92,11 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
       </nav>
 
       <div className="sidebar-pipeline" aria-hidden="true">
-        <span>Git</span>
+        <span>변경</span>
         <i />
-        <span>AI</span>
+        <span>분석</span>
         <i />
-        <span>DB</span>
+        <span>결과</span>
       </div>
 
       <div className="profile">
@@ -109,12 +106,13 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
           <p>{user.email}</p>
         </div>
         <button className="logout-button" type="button" onClick={handleLogout}>
-          <i>⏻</i>
+          <i>↩</i>
           <span className="logout-text">로그아웃</span>
         </button>
       </div>
     </aside>
   );
+
 };
 
 export default Sidebar;

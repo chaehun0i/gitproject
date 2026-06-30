@@ -108,7 +108,7 @@
 }
 
 .home-project-row {
-  grid-template-columns: 38px minmax(0, 1fr) auto 72px;
+  grid-template-columns: 46px minmax(0, 1fr) auto 72px;
 }
 
 .home-project-row > span,
@@ -536,6 +536,15 @@
   grid-template-columns: 1fr;
 }
 
+.project-card-grid.list-mode .repo-card {
+  min-height: 0;
+  padding: 18px;
+}
+
+.project-card-grid.list-mode .repo-card .repo-head {
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+}
+
 .repo-card.selected {
   border-color: var(--blue);
 }
@@ -673,7 +682,7 @@ pre {
 }
 
 .table-row {
-  grid-template-columns: minmax(220px, 1fr) 110px 110px minmax(150px, 0.8fr) 76px;
+  grid-template-columns: minmax(280px, 1.35fr) 110px minmax(140px, 0.7fr) 120px 76px;
 }
 
 .profile-card-large {
@@ -762,9 +771,49 @@ pre {
 
 .ai-insight-workspace {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: 18px;
+}
+
+.repo-more-button {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid #dfe7f7;
+  border-radius: 8px;
+  color: #64748b;
+  background: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.pagination-row button {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid #dfe7f7;
+  border-radius: 8px;
+  color: var(--primary);
+  background: #ffffff;
+  font-weight: 900;
+}
+
+.pagination-row button:disabled {
+  color: #94a3b8;
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+
+.pagination-row span {
+  color: var(--muted);
+  font-weight: 900;
 }
 
 .ai-insight-workspace .summary-points span {
@@ -1006,6 +1055,26 @@ pre {
   min-height: 34px;
 }
 
+.message-card p::before {
+  content: "추천 근거";
+  display: inline-flex;
+  margin-right: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: #eef2ff;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.message-card-head button,
+.side-actions button:first-child {
+  border: 0;
+  color: #ffffff;
+  background: var(--gradient-ai);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.18);
+}
+
 .refined-commit-side {
   position: sticky;
   top: 20px;
@@ -1231,6 +1300,41 @@ pre {
   color: #ffffff;
 }
 
+.settings-env-panel,
+.api-settings-card,
+.integration-item:nth-child(n+3) {
+  display: none;
+}
+
+.settings-profile-panel button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: var(--gradient-ai);
+  font-size: 0;
+  font-weight: 900;
+}
+
+.settings-profile-panel button::after {
+  content: "프로필 수정";
+  font-size: 0.9rem;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.toggle-row input {
+  order: 2;
+  width: 42px;
+  min-height: 22px;
+  accent-color: var(--primary);
+}
+
 .settings-env-panel span,
 .settings-env-panel p {
   color: #e0e7ff;
@@ -1412,9 +1516,29 @@ pre {
 .live-console {
   display: grid;
   gap: 8px;
+  max-height: 112px;
+  overflow: hidden;
   padding: 14px;
   border-radius: 10px;
   background: #0f172a;
+}
+
+.live-console-card {
+  position: relative;
+}
+
+.live-console-card::after {
+  content: "상세 로그 보기";
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  border-radius: 8px;
+  color: var(--primary);
+  background: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
 }
 
 .live-console code {
@@ -1429,13 +1553,32 @@ pre {
 }
 
 .result-review-card .insight-visual {
-  width: 92px;
+  display: none;
 }
 
 .completion-card {
   background:
     linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(6, 182, 212, 0.05)),
     #ffffff;
+}
+
+.completion-card p {
+  max-width: 880px;
+  margin: 0;
+}
+
+.completion-card button,
+.result-actions button {
+  white-space: nowrap;
+}
+
+.result-action-bar .recommend-badge,
+.progress-hero .recommend-badge {
+  display: none;
+}
+
+.result-metrics .metric-card small {
+  display: none;
 }
 
 .detail-hero {
@@ -1455,6 +1598,11 @@ pre {
 .file-navigator {
   display: grid;
   gap: 10px;
+}
+
+.file-search {
+  min-height: 40px;
+  border-radius: 8px;
 }
 
 .file-item {
@@ -1479,7 +1627,7 @@ pre {
 
 .file-item > span {
   display: grid;
-  width: 38px;
+  width: 46px;
   height: 38px;
   place-items: center;
   border-radius: 10px;
@@ -1556,11 +1704,13 @@ pre {
 }
 
 .diff-line.add {
-  background: rgba(34, 197, 94, 0.12);
+  color: #dcfce7;
+  background: rgba(34, 197, 94, 0.22);
 }
 
 .diff-line.del {
-  background: rgba(239, 68, 68, 0.12);
+  color: #fee2e2;
+  background: rgba(239, 68, 68, 0.24);
 }
 
 .detail-ai-panel {
@@ -1571,6 +1721,27 @@ pre {
 .pipeline-meta-card .summary-points span {
   display: grid;
   align-items: start;
+}
+
+.detail-hero .recommend-badge,
+.pipeline-meta-card {
+  display: none;
+}
+
+.refined-tab-panel p,
+.detail-ai-panel p,
+.detail-ai-panel small {
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.pagination-row.compact {
+  margin-top: 8px;
+}
+
+.pagination-row.compact button {
+  min-height: 32px;
+  padding: 0 10px;
 }
 
 .history-toolbar {

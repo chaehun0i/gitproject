@@ -3,19 +3,19 @@ import { PipelineVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
 
 const steps = [
-  ["collect", "커밋 수집", "GitHub API 또는 업로드 파일에서 커밋 로그를 수집합니다."],
-  ["diff", "변경 파일 분석", "diff, patch, changed-files 산출물을 파싱합니다."],
+  ["collect", "커밋 수집", "연결된 저장소 또는 업로드 파일에서 변경 기록을 모읍니다."],
+  ["diff", "변경 파일 분석", "파일별 변경 내용을 정리합니다."],
   ["understand", "코드 변경 이해", "파일별 변경 의도와 영향 범위를 분류합니다."],
   ["summary", "AI 요약 생성", "주요 변경 사항과 위험 포인트를 요약합니다."],
   ["message", "커밋 메시지 제안", "Conventional Commit 후보를 생성합니다."],
 ];
 
 const logs = [
-  "[WebSocket] analysis:run:15 연결됨",
-  "[Git Parser] commit-history.patch 파싱 완료",
-  "[Diff Parser] 변경 파일 42개 감지",
-  "[AI Analyzer] 인증 흐름 변경 요약 생성 중",
-  "[DB] analysis_files, ai_findings 저장 대기",
+  "분석 작업이 시작되었습니다.",
+  "커밋 기록 정리가 완료되었습니다.",
+  "변경 파일 42개를 확인했습니다.",
+  "인증 흐름 변경 요약을 생성 중입니다.",
+  "분석 결과를 저장할 준비를 하고 있습니다.",
 ];
 
 const AnalysisProgressPage = ({ currentPage, onNavigate }) => {
@@ -42,15 +42,15 @@ const AnalysisProgressPage = ({ currentPage, onNavigate }) => {
       currentPage={currentPage}
       onNavigate={onNavigate}
       title="분석 진행 상태"
-      description="WebSocket 기반 진행률과 백엔드 분석 파이프라인 상태를 확인합니다."
+      description="분석 진행률과 현재 처리 단계를 확인합니다."
     >
       <section className="progress-hero page-card">
         <div>
-          <span className="recommend-badge">WebSocket Connected</span>
+          <span className="recommend-badge">실시간 진행 중</span>
           <h2>AI가 변경 내용을 분석 중입니다</h2>
           <p>
-            커밋 수집부터 AI 요약 생성까지 단계별 진행 상태를 실시간으로 보여주는 화면입니다.
-            실제 백엔드 연결 전에는 mock 진행률로 동작합니다.
+            커밋 수집부터 요약 생성까지 단계별 진행 상태를 보여주는 화면입니다.
+            분석이 완료되면 결과 요약 화면에서 주요 변경 내용을 확인할 수 있습니다.
           </p>
           <div className="progress-bar large">
             <span style={{ "--score": `${progress}%` }} />

@@ -8,6 +8,14 @@ const files = [
   ["backend/src/utils/rediscl.py", "Python", "추가", "+64", "-0", "중간"],
 ];
 
+const detailFiles = [
+  ...files,
+  ["src/pages/HomePage.jsx", "React", "\uC218\uC815", "+38", "-14", "\uB0AE\uC74C"],
+  ["src/components/analysis/AnalysisStartDialog.jsx", "React", "\uC218\uC815", "+72", "-19", "\uC911\uAC04"],
+  ["src/styles/pages/appPages.css", "CSS", "\uC218\uC815", "+116", "-22", "\uB0AE\uC74C"],
+  ["src/stores/slices/authSlice.js", "JavaScript", "\uC218\uC815", "+31", "-9", "\uC911\uAC04"],
+];
+
 const diffLines = [
   ["ctx", "export const login = async (email, password) => {"],
   ["del", "  const token = await api.post('/auth/login', { email, password });"],
@@ -25,8 +33,8 @@ const diffLines = [
 
 const analysisPoints = [
   ["로그인 유지", "새로고침 후 refresh API로 JWE 세션을 복구하는 흐름이 추가되었습니다."],
-  ["Redis 연동", "토큰 자체보다 uuid 기반 세션 식별자를 Redis TTL과 함께 관리하는 구조가 드러납니다."],
-  ["DB 저장", "분석 결과는 프로젝트, 파일, 커밋, AI 요약 테이블로 분리 저장하기 적합합니다."],
+  ["상태 복구", "사용자 식별 정보와 로그인 유지 상태를 분리해 안정적으로 관리하는 흐름입니다."],
+  ["분석 기록", "프로젝트, 파일, 커밋, 요약 결과를 다시 확인하기 좋은 구조로 정리됩니다."],
   ["위험 요소", "refresh 실패 시 UX 메시지와 강제 로그아웃 처리가 필요합니다."],
 ];
 
@@ -37,7 +45,7 @@ const commits = [
 ];
 
 const issues = [
-  ["AUTH-12", "Redis TTL 만료 시 프론트 상태 처리 검증"],
+  ["AUTH-12", "로그인 유지 만료 시 화면 상태 처리 검증"],
   ["API-08", "refresh 응답 스키마 통일"],
   ["TEST-21", "로그인 유지 e2e 테스트 추가"],
 ];
@@ -51,8 +59,14 @@ const tabs = {
 
 const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
   const [tab, setTab] = useState("code");
-  const [selectedFile, setSelectedFile] = useState(files[0]);
+  const [selectedFile, setSelectedFile] = useState(detailFiles[0]);
+  const [fileQuery, setFileQuery] = useState("");
+  const [filePage, setFilePage] = useState(1);
   const [fileName, language, changeType, added, removed, risk] = selectedFile;
+  const pageSize = 5;
+  const filteredFiles = detailFiles.filter((file) => file[0].toLowerCase().includes(fileQuery.toLowerCase()));
+  const totalFilePages = Math.max(1, Math.ceil(filteredFiles.length / pageSize));
+  const pagedFiles = filteredFiles.slice((filePage - 1) * pageSize, filePage * pageSize);
 
   return (
     <PageShell
@@ -63,11 +77,11 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
     >
       <section className="detail-hero page-card">
         <div>
-          <span className="recommend-badge">Git Parser · Diff Parser · AI Analyzer</span>
+          <span className="recommend-badge">파일 변경 분석</span>
           <h2>{fileName}</h2>
           <p>
             인증 API 흐름과 세션 복구 로직이 함께 변경된 파일입니다. AI 분석은 코드 변경,
-            영향도, DB 저장 대상 메타데이터를 함께 정리합니다.
+            영향도와 검토할 변경 사항을 함께 정리합니다.
           </p>
         </div>
         <div className="result-metrics compact">
@@ -82,9 +96,18 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
         <aside className="page-card file-navigator">
           <div className="panel-title">
             <h2>변경 파일</h2>
-            <span className="recommend-badge">{files.length} files</span>
+            <span className="recommend-badge">{filteredFiles.length} files</span>
           </div>
-          {files.map((file) => (
+          <input
+            className="file-search"
+            value={fileQuery}
+            onChange={(event) => {
+              setFileQuery(event.target.value);
+              setFilePage(1);
+            }}
+            placeholder="파일 검색"
+          />
+          {pagedFiles.map((file) => (
             <button
               className={file[0] === fileName ? "file-item active" : "file-item"}
               key={file[0]}
@@ -98,6 +121,11 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
               </div>
             </button>
           ))}
+          <div className="pagination-row compact">
+            <button disabled={filePage === 1} type="button" onClick={() => setFilePage((value) => Math.max(1, value - 1))}>이전</button>
+            <span>{filePage} / {totalFilePages}</span>
+            <button disabled={filePage === totalFilePages} type="button" onClick={() => setFilePage((value) => Math.min(totalFilePages, value + 1))}>다음</button>
+          </div>
         </aside>
 
         <article className="code-review-card premium-code-card">
@@ -133,7 +161,7 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
               <h2>AI 분석 결과</h2>
               <p>
                 로그인 이후 세션 복구 책임이 프론트와 백엔드 refresh API로 분리되었습니다.
-                JWE에는 식별자만 두고 Redis가 세션 유지 상태를 담당하는 구조가 적절합니다.
+                식별 정보와 로그인 유지 상태를 분리해 관리하는 구조가 적절합니다.
               </p>
               <div className="summary-points">
                 {analysisPoints.map(([title, text]) => (
@@ -165,7 +193,7 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
             <h2>AI 요약</h2>
             <p>
               사용자 인증 상태 복구와 refresh 토큰 갱신 흐름이 핵심 변경입니다.
-              백엔드 Redis 세션, JWE uuid, 프론트 Redux 상태가 연결됩니다.
+              로그인 유지 상태와 화면 복구 흐름이 함께 연결됩니다.
             </p>
             <div className="impact-meter"><span style={{ "--score": "78%" }} /></div>
             <small>영향도 78% · 인증/세션 영역</small>
@@ -183,7 +211,7 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
             <h2>권장 조치</h2>
             <div className="summary-points">
               <span>refresh 실패 케이스 통합 테스트 추가</span>
-              <span>Redis TTL과 프론트 재시도 주기 문서화</span>
+              <span>로그인 유지 만료와 화면 재시도 기준 문서화</span>
               <span>로그아웃 시 세션 삭제 API 호출 확인</span>
             </div>
             <button type="button" onClick={() => onNavigate("commitMessage")}>커밋 메시지 생성</button>

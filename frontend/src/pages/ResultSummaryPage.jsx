@@ -4,8 +4,8 @@ import { InsightVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
 
 const summaryMetrics = [
-  ["분석 커밋", "128", "Git Parser 수집"],
-  ["변경 파일", "42", "Diff Parser 집계"],
+  ["분석 커밋", "128", "변경 기록 기준"],
+  ["변경 파일", "42", "파일 변경 기준"],
   ["추가 라인", "+2,345", "기능 영역 집중"],
   ["삭제 라인", "-1,234", "중복 로직 제거"],
   ["위험 포인트", "8", "AI 리뷰 필요"],
@@ -20,8 +20,8 @@ const summaryChangeTypes = [
 
 const reviewPoints = [
   "refresh API 실패 시 UX 메시지와 로그아웃 처리 확인",
-  "Redis TTL과 프론트 세션 갱신 주기 정합성 검토",
-  "MariaDB 저장 테이블의 analysis_run 상태 전이 확인",
+  "로그인 유지 실패 시 사용자 안내 흐름 검토",
+  "분석 기록의 완료 상태와 재조회 흐름 확인",
   "인증 변경 구간에 대한 e2e 테스트 보강",
 ];
 
@@ -31,13 +31,13 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
       currentPage={currentPage}
       onNavigate={onNavigate}
       title="분석 결과 요약"
-      description="백엔드 분석 파이프라인이 만든 집계 결과와 AI 요약을 한 화면에서 확인합니다."
+      description="이번 분석에서 확인된 변경 요약과 검토 항목을 한 화면에서 확인합니다."
     >
       <section className="result-action-bar page-card">
         <div>
-          <span className="recommend-badge">analysis_run #15 · DB 저장 완료</span>
+          <span className="recommend-badge">분석 완료</span>
           <h2>ai-commit-analyzer 분석이 완료되었습니다</h2>
-          <p>Git 산출물 파싱, diff 분석, AI 요약, 추천 메시지 생성 결과가 MariaDB 집계 데이터로 정리되었습니다.</p>
+          <p>업로드한 변경 기록과 선택한 분석 옵션을 바탕으로 요약과 추천 메시지가 준비되었습니다.</p>
         </div>
         <div className="result-actions">
           <button type="button">결과 공유</button>
@@ -60,7 +60,7 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
           <h2>변경 요약</h2>
           <p>
             인증 세션 복구, API 응답 처리, 프론트 상태 복원 로직이 주요 변경으로 확인되었습니다.
-            백엔드의 Redis/JWE 세션 유지 흐름과 프론트 Redux 복구 흐름이 함께 연결됩니다.
+            로그인 유지 흐름과 화면 복구 흐름이 함께 개선되었습니다.
           </p>
           <div className="summary-points">
             <span>로그인 유지와 refresh 토큰 갱신 흐름 개선</span>
@@ -95,7 +95,7 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
         <div>
           <span className="recommend-badge">분석 완료</span>
           <h2>AI 종합 요약</h2>
-          <p>이번 변경은 인증 안정성과 분석 워크플로우를 보강한 작업입니다. 다음 단계에서는 refresh 실패 테스트와 DB 저장 상태 검증을 우선 확인하는 것이 좋습니다.</p>
+          <p>이번 변경은 인증 안정성과 분석 흐름을 보강한 작업입니다. 다음 단계에서는 로그인 유지 실패 상황과 결과 저장 상태를 우선 확인하는 것이 좋습니다.</p>
         </div>
         <button type="button" onClick={() => onNavigate("detail")}>파일 상세 분석 보기</button>
       </section>
