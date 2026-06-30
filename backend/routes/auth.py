@@ -11,9 +11,9 @@ from utils.auth import (
     clear_login_cookie,
     get_current_user,
     issue_login_cookie,
+    refresh_login_cookie,
     register_user,
 )
-from utils.db import connect_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -46,29 +46,16 @@ def to_auth_response(user: dict | object) -> AuthResponse:
 
 @router.post("/login", response_model=AuthResponse)
 async def login(payload: AuthRequest, response: Response) -> AuthResponse:
-    connection = await connect_db()
-    try:
-        user = await authenticate_or_create_user(
-            connection,
-            payload.email,
-            payload.password,
-            payload.name,
-        )
-        await issue_login_cookie(response, user)
-        return to_auth_response(user)
-    finally:
-        await connection.close()
+    user = await authenticate_or_create_user(payload.email, payload.password, payload.name)
+    await issue_login_cookie(response, user)
+    return to_auth_response(user)
 
 
 @router.post("/signup", response_model=AuthResponse)
 async def signup(payload: AuthRequest, response: Response) -> AuthResponse:
-    connection = await connect_db()
-    try:
-        user = await register_user(connection, payload.email, payload.password, payload.name)
-        await issue_login_cookie(response, user)
-        return to_auth_response(user)
-    finally:
-        await connection.close()
+    user = await register_user(payload.email, payload.password, payload.name)
+    await issue_login_cookie(response, user)
+    return to_auth_response(user)
 
 
 @router.get("/me", response_model=AuthResponse)
@@ -76,6 +63,15 @@ async def me(
     token: Annotated[str | None, Cookie(alias=settings.auth_cookie_name)] = None,
 ) -> AuthResponse:
     user = await get_current_user(token)
+    return to_auth_response(user)
+
+
+@router.post("/refresh", response_model=AuthResponse)
+async def refresh(
+    response: Response,
+    token: Annotated[str | None, Cookie(alias=settings.auth_cookie_name)] = None,
+) -> AuthResponse:
+    user = await refresh_login_cookie(response, token)
     return to_auth_response(user)
 
 

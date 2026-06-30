@@ -1,5 +1,4 @@
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout as logoutAction } from "@stores/slices/authSlice";
 import { logoutUser } from "../../api";
 import { notify } from "@utils/feedback";
@@ -7,30 +6,25 @@ import "@styles/layout/sidebar.css";
 
 const navGroups = [
   {
-    label: "",
-    items: [["home", "홈", "⌂"]],
-  },
-  {
-    label: "분석",
+    label: "워크스페이스",
     items: [
-      ["projects", "프로젝트 목록", "□"],
-      ["newAnalysis", "새 분석 시작", "+"],
-      ["history", "분석 내역", "◷"],
+      ["home", "홈", "H"],
+      ["projects", "프로젝트", "P"],
+      ["newAnalysis", "새 분석", "N"],
+      ["history", "분석 내역", "L"],
     ],
   },
   {
-    label: "데이터",
+    label: "분석 결과",
     items: [
-      ["result", "결과 요약", "▣"],
-      ["detail", "상세 분석", "◇"],
-      ["commitMessage", "커밋 메시지", "✎"],
+      ["result", "결과 요약", "R"],
+      ["detail", "상세 분석", "D"],
+      ["commitMessage", "커밋 메시지", "C"],
     ],
   },
   {
-    label: "설정",
-    items: [
-      ["myPage", "마이페이지", "⚙"],
-    ],
+    label: "계정",
+    items: [["myPage", "설정", "S"]],
   },
 ];
 
@@ -39,7 +33,7 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
   const user = useSelector((state) => state.auth.user);
   const initials = user.name?.slice(0, 2).toUpperCase() ?? "CL";
 
-  const logout = async () => {
+  const handleLogout = async () => {
     try {
       await logoutUser();
     } finally {
@@ -53,10 +47,10 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
     <aside className="sidebar">
       <div className="sidebar-head">
         <button className="brand" type="button" onClick={() => onNavigate("home")}>
-          <span className="brand-mark">&lt;/&gt;</span>
+          <span className="brand-mark">CL</span>
           <div>
             <strong>CommitLens</strong>
-            <p>AI Git 분석 포트폴리오</p>
+            <p>AI Git 분석 도구</p>
           </div>
         </button>
         <button
@@ -72,15 +66,15 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
       <div className="sidebar-status">
         <span />
         <div>
-          <b>세션 연결됨</b>
-          <p>Redis + JWE 쿠키</p>
+          <b>개발 환경</b>
+          <p>MariaDB 3307 · Redis</p>
         </div>
       </div>
 
       <nav className="side-nav" aria-label="주 메뉴">
         {navGroups.map((group) => (
-          <div className="nav-group" key={group.label || "home"}>
-            {group.label ? <span>{group.label}</span> : null}
+          <div className="nav-group" key={group.label}>
+            <span>{group.label}</span>
             {group.items.map(([page, label, icon]) => (
               <button
                 className={currentPage === page ? "active" : ""}
@@ -103,8 +97,9 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
           <strong>{user.name}</strong>
           <p>{user.email}</p>
         </div>
-        <button className="logout-button" type="button" aria-label="로그아웃" onClick={logout}>
-          ⎋ <span className="logout-text">로그아웃</span>
+        <button className="logout-button" type="button" onClick={handleLogout}>
+          <i>Q</i>
+          <span className="logout-text">로그아웃</span>
         </button>
       </div>
     </aside>

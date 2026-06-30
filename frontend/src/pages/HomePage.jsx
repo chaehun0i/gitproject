@@ -9,7 +9,7 @@ const mockMetrics = [
   ["분석한 프로젝트", "5", "전체 프로젝트"],
   ["총 커밋 수", "1,248", "최근 30일 기준"],
   ["분석 완료", "8", "총 분석 작업"],
-  ["AI 성공률", "92%", "전체 성공률"],
+  ["AI 분석 성공률", "92%", "전체 성공률"],
 ];
 
 const mockProjects = [
@@ -30,21 +30,17 @@ const HomePage = ({ currentPage, onNavigate }) => {
   const metrics = mockOrEmpty(mockMetrics);
   const recentProjects = mockOrEmpty(mockProjects);
 
-  const startAnalysis = () => {
-    onNavigate("progress");
-  };
-
   return (
     <AppLayout currentPage={currentPage} onNavigate={onNavigate}>
       <header className="home-hero">
         <div>
           <span>{useMocks ? "더미 데이터 사용 중" : "실데이터 모드"}</span>
-          <h1>이채훈님, 오늘의 커밋 흐름을 확인해보세요.</h1>
-          <p>Git 산출물 업로드와 GitHub 연동 분석을 한 화면에서 시작하고 추적합니다.</p>
+          <h1>오늘의 커밋 흐름을 한 화면에서 확인하세요.</h1>
+          <p>Git 산출물 업로드와 GitHub 연동 분석을 모두 지원하는 포트폴리오용 AI 커밋 분석 화면입니다.</p>
         </div>
         <AnalysisStartDialog
-          onStart={startAnalysis}
-          trigger={<button type="button">＋ 새 분석 시작</button>}
+          onStart={() => onNavigate("progress")}
+          trigger={<button type="button">새 분석 시작</button>}
         />
       </header>
 
@@ -93,7 +89,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
           <h2>AI 인사이트 요약</h2>
           <div className="summary-points">
             {(useMocks ? [
-              "지난 30일간 커밋 빈도가 12.4% 증가했습니다.",
+              "최근 30일간 커밋 빈도가 12.4% 증가했습니다.",
               "중복 코드가 발견된 파일이 3개 있습니다.",
               "Conventional Commits 적용률은 68%입니다.",
             ] : ["분석이 완료되면 AI 요약이 표시됩니다."]).map((item) => <span key={item}>{item}</span>)}
@@ -102,7 +98,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
 
         <article className="page-card risk-card">
           <h2>최근 활동</h2>
-          {(useMocks ? ["프로젝트 분석 완료", "GitHub 연동 분석 시작", "새로운 커밋 28개 분석", "develop 브랜치 분석 완료"] : ["활동 내역이 없습니다."]).map((item, index) => (
+          {(useMocks ? ["프로젝트 분석 완료", "GitHub 연동 분석 시작", "새 커밋 28개 분석", "develop 브랜치 분석 완료"] : ["활동 내역이 없습니다."]).map((item, index) => (
             <div className="risk-row" key={item}>
               <b>{index + 1}</b>
               <span>{item}</span>

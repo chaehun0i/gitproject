@@ -8,10 +8,6 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
   const [analysisType, setAnalysisType] = useState("gitFiles");
   const [termsOpen, setTermsOpen] = useState(false);
 
-  const requestStart = () => {
-    setTermsOpen(true);
-  };
-
   const agreeAndStart = () => {
     setTermsOpen(false);
     const label = analysisType === "gitFiles" ? "Git 산출물 업로드" : "GitHub 연동";
@@ -52,10 +48,10 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
               <div className="dialog-form">
                 <label>
                   프로젝트 이름
-                  <input placeholder="예: sprint-12-review" />
+                  <input placeholder="예: sprint-12-auth-review" />
                 </label>
                 <div className="command-help">
-                  <b>업로드 권장 산출물</b>
+                  <b>권장 Git 산출물</b>
                   <code>git log --stat --patch &gt; commit-history.patch</code>
                   <code>git diff main...HEAD &gt; changes.diff</code>
                   <code>git diff --name-only main...HEAD &gt; changed-files.txt</code>
@@ -103,7 +99,7 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
               <Dialog.Close asChild>
                 <button className="outline-action" type="button">취소</button>
               </Dialog.Close>
-              <button className="primary-action" type="button" onClick={requestStart}>
+              <button className="primary-action" type="button" onClick={() => setTermsOpen(true)}>
                 약관 확인 후 시작
               </button>
             </div>

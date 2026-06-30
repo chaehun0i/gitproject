@@ -3,7 +3,7 @@ import ChangeTypeDonutChart from "@components/charts/ChangeTypeDonutChart";
 import PageShell from "@pages/PageShell";
 
 const metrics = [
-  ["총 커밋 수", "128", "지난 분석 대비 +18"],
+  ["총 커밋 수", "128", "직전 분석 대비 +18"],
   ["변경 파일 수", "42", "핵심 파일 9개"],
   ["추가된 코드", "+2,345", "기능 영역 집중"],
   ["삭제된 코드", "-1,234", "중복 로직 제거"],
@@ -14,7 +14,7 @@ const changeTypes = [
   { name: "기능 추가", value: 40 },
   { name: "버그 수정", value: 28 },
   { name: "리팩터링", value: 20 },
-  { name: "기타", value: 12 },
+  { name: "문서/기타", value: 12 },
 ];
 
 const ResultSummaryPage = ({ currentPage, onNavigate }) => {
@@ -33,10 +33,10 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
       <section className="result-dashboard-grid">
         <article className="page-card insight-card">
           <h2>변경 요약</h2>
-          <p>이번 분석에서는 인증 흐름 개선, API 응답 형식 통일, UI 상태 처리 보강이 주요 변경 사항으로 확인되었습니다.</p>
+          <p>인증 흐름 개선, API 응답 형식 통일, UI 상태 처리 보강이 주요 변경 사항으로 확인되었습니다.</p>
           <div className="summary-points">
             <span>로그인 유지 토큰 흐름 개선</span>
-            <span>API 응답 에러 핸들링 통일</span>
+            <span>API 응답 오류 처리 통일</span>
             <span>프론트 상태 복원 로직 추가</span>
           </div>
         </article>
@@ -62,7 +62,7 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
 
       <section className="page-card ai-summary-card">
         <h2>AI 종합 요약</h2>
-        <p>인증 시스템을 개선하고 API 구조를 정리하며 안정성과 유지보수성을 높인 작업입니다.</p>
+        <p>인증 시스템을 개선하고 API 구조를 정리해 안정성과 유지보수성을 높인 작업입니다.</p>
         <button type="button" onClick={() => onNavigate("detail")}>상세보기</button>
       </section>
     </PageShell>

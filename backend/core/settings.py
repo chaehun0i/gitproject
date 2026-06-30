@@ -10,15 +10,27 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    database_url: str = "postgresql://app:app_password@localhost:5432/app"
-    redis_url: str = "redis://localhost:6379/0"
-    mariadb_url: str = "mysql+pymysql://app:app_password@localhost:3306/app"
-    kafka_bootstrap_servers: str = "localhost:9094"
-    ollama_base_url: str = "http://localhost:11434"
-    frontend_origin: str = "http://localhost:5173"
+    host_ip: str
+    frontend_origin: str
 
-    auth_cookie_name: str = "commitlens_session"
-    jwe_secret: str = "dev-only-change-me-commitlens-jwe-secret"
+    maria_db_user: str
+    maria_db_password: str
+    maria_db_host: str
+    maria_db_database: str
+    maria_db_port: int = 3306
+
+    pg_db_user: str
+    pg_db_password: str
+    pg_db_host: str
+    pg_db_database: str
+    pg_db_port: int = 5432
+
+    redis_url: str
+    kafka_bootstrap_servers: str
+    ollama_base_url: str
+
+    auth_cookie_name: str
+    jwe_secret: str
     session_ttl_seconds: int = 86400
     secure_cookie: bool = False
 

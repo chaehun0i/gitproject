@@ -2,8 +2,8 @@ import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "sonner";
-import { getCurrentUser } from "./api";
-import { login, setAuthReady } from "@stores/slices/authSlice";
+import { refreshSession } from "./api";
+import { login, logout, setAuthReady } from "@stores/slices/authSlice";
 import Dashboard from "@pages/Dashboard";
 import AuthPage from "@pages/AuthPage";
 import SignupPage from "@pages/SignupPage";
@@ -60,7 +60,7 @@ const App = () => {
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        const user = await getCurrentUser();
+        const user = await refreshSession();
         dispatch(login(user));
       } catch {
         dispatch(setAuthReady());
@@ -69,6 +69,35 @@ const App = () => {
 
     restoreSession();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      return undefined;
+    }
+
+    const refresh = async () => {
+      try {
+        const user = await refreshSession();
+        dispatch(login(user));
+      } catch {
+        dispatch(logout());
+      }
+    };
+
+    const refreshTimer = window.setInterval(refresh, 10 * 60 * 1000);
+    const refreshOnVisible = () => {
+      if (document.visibilityState === "visible") {
+        refresh();
+      }
+    };
+
+    document.addEventListener("visibilitychange", refreshOnVisible);
+
+    return () => {
+      window.clearInterval(refreshTimer);
+      document.removeEventListener("visibilitychange", refreshOnVisible);
+    };
+  }, [dispatch, isLoggedIn]);
 
   const handleNavigate = (page) => {
     navigate(pagePaths[page] ?? pagePaths.dashboard);

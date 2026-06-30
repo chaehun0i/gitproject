@@ -11,7 +11,7 @@ export const notify = {
 
 export const confirmAction = ({
   title = "진행할까요?",
-  text = "이 작업은 되돌릴 수 없습니다.",
+  text = "이 작업은 되돌리기 어려울 수 있습니다.",
   confirmButtonText = "확인",
   cancelButtonText = "취소",
   icon = "warning",
@@ -23,7 +23,7 @@ export const confirmAction = ({
     confirmButtonText,
     cancelButtonText,
     showCancelButton: true,
-    confirmButtonColor: "#2563eb",
+    confirmButtonColor: "#315df4",
     cancelButtonColor: "#64748b",
     reverseButtons: true,
   });
@@ -35,6 +35,6 @@ export const showWarning = (title, text) => {
     text,
     icon: "warning",
     confirmButtonText: "확인",
-    confirmButtonColor: "#2563eb",
+    confirmButtonColor: "#315df4",
   });
 };

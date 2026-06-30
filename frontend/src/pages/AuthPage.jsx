@@ -28,10 +28,10 @@ const AuthPage = ({ onNavigate }) => {
   return (
     <main className="auth-page">
       <section className="auth-visual">
-        <div className="auth-brand">
+        <button className="auth-brand" type="button" onClick={() => onNavigate("dashboard")}>
           <span>&lt;/&gt;</span>
           <strong>CommitLens</strong>
-        </div>
+        </button>
         <span className="auth-pill">AI 기반 Git 분석 플랫폼</span>
         <h1>
           커밋을 분석하고,
@@ -58,27 +58,25 @@ const AuthPage = ({ onNavigate }) => {
         </div>
 
         <div className="auth-features">
-          <div><span>G</span><b>Git 산출물 분석</b><small>git log, diff, patch를 업로드해 분석</small></div>
-          <div><span>AI</span><b>변경 인사이트</b><small>핵심 변경 사항과 영향도를 한눈에 파악</small></div>
-          <div><span>CM</span><b>커밋 메시지 추천</b><small>상황에 맞는 커밋 메시지를 제안</small></div>
+          <div><span>G</span><b>Git 산출물 분석</b><small>log, diff, patch 업로드</small></div>
+          <div><span>AI</span><b>변경 인사이트</b><small>영향도와 위험도 파악</small></div>
+          <div><span>CM</span><b>메시지 추천</b><small>상황에 맞는 커밋 제안</small></div>
         </div>
-        <footer>© 2024 CommitLens. All rights reserved.</footer>
       </section>
 
       <section className="auth-form-area">
-        <button className="theme-button" type="button" aria-label="테마">☼</button>
         <form className="login-card" onSubmit={login}>
           <h2>로그인</h2>
-          <p>CommitLens에 오신 것을 환영합니다!</p>
-          <label>이메일<input name="email" placeholder="이메일 주소를 입력하세요" type="email" defaultValue="chaehoon@example.com" /></label>
-          <label>비밀번호<input name="password" placeholder="비밀번호를 입력하세요" type="password" defaultValue="demo1234" /></label>
+          <p>CommitLens에 오신 것을 환영합니다.</p>
+          <label>이메일<input name="email" placeholder="이메일 주소" type="email" defaultValue="chaehoon@example.com" /></label>
+          <label>비밀번호<input name="password" placeholder="비밀번호" type="password" defaultValue="demo1234" /></label>
           <div className="auth-options">
             <label><input defaultChecked type="checkbox" /> 로그인 상태 유지</label>
             <a href="#forgot">비밀번호를 잊으셨나요?</a>
           </div>
           <button type="submit">로그인</button>
           <div className="divider"><span>또는</span></div>
-          <button className="github-button" type="button" onClick={() => notify.info("GitHub OAuth 연결 예정입니다.")}>
+          <button className="github-button" type="button" onClick={() => notify.info("GitHub OAuth 연동 예정입니다.")}>
             GitHub로 로그인
           </button>
           <p className="signup-text">계정이 없으신가요? <button type="button" onClick={() => onNavigate("signup")}>회원가입</button></p>

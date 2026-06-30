@@ -10,7 +10,18 @@ services:
       - path: .env
         required: false
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://app:app_password@postgres:5432/app}
+      HOST_IP: ${HOST_IP:-http://localhost:8000}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173}
+      MARIA_DB_USER: ${MARIA_DB_USER:-app}
+      MARIA_DB_PASSWORD: ${MARIA_DB_PASSWORD:-app_password}
+      MARIA_DB_HOST: ${MARIA_DB_HOST:-mariadb}
+      MARIA_DB_DATABASE: ${MARIA_DB_DATABASE:-app}
+      MARIA_DB_PORT: ${MARIA_DB_PORT:-3306}
+      PG_DB_USER: ${PG_DB_USER:-app}
+      PG_DB_PASSWORD: ${PG_DB_PASSWORD:-app_password}
+      PG_DB_HOST: ${PG_DB_HOST:-postgres}
+      PG_DB_DATABASE: ${PG_DB_DATABASE:-app}
+      PG_DB_PORT: ${PG_DB_PORT:-5432}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       JWE_SECRET: ${JWE_SECRET:-dev-only-change-me-commitlens-jwe-secret}
     volumes:
@@ -20,6 +31,8 @@ services:
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     depends_on:
+      mariadb:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       redis:
@@ -40,6 +53,29 @@ services:
         condition: service_started
     profiles:
       - frontend
+
+  mariadb:
+    image: ${MARIADB_IMAGE:-mariadb:12.1.2}
+    container_name: ai-lab-mariadb
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-app}
+      MARIADB_USER: ${MARIADB_USER:-app}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-app_password}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-root_password}
+    ports:
+      - "${MARIADB_PORT:-3307}:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./db/mariadb/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - backend
+      - frontend
+      - db
 
   postgres:
     image: pgvector/pgvector:pg16
@@ -129,6 +165,7 @@ networks:
     name: ai-lab-network
 
 volumes:
+  mariadb_data:
   postgres_data:
   redis_data:
   kafka_data:

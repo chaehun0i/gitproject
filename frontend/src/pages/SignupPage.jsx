@@ -1,7 +1,7 @@
 import heroImage from "@assets/images/commitlens-hero.png";
+import { notify } from "@utils/feedback";
 import { useDispatch } from "react-redux";
 import { login as loginAction } from "@stores/slices/authSlice";
-import { notify } from "@utils/feedback";
 import { signupUser } from "../api";
 import "@styles/pages/auth.css";
 
@@ -22,25 +22,25 @@ const SignupPage = ({ onNavigate }) => {
       notify.success("회원가입이 완료되었습니다.");
       onNavigate("home");
     } catch {
-      notify.error("회원가입에 실패했습니다. 이미 가입된 이메일이거나 서버 연결이 필요합니다.");
+      notify.error("회원가입에 실패했습니다. 입력값과 백엔드 상태를 확인해주세요.");
     }
   };
 
   return (
-    <main className="auth-page signup-page">
+    <main className="auth-page">
       <section className="auth-visual">
-        <div className="auth-brand">
+        <button className="auth-brand" type="button" onClick={() => onNavigate("dashboard")}>
           <span>&lt;/&gt;</span>
           <strong>CommitLens</strong>
-        </div>
-        <span className="auth-pill">포트폴리오용 AI Git 분석 데모</span>
+        </button>
+        <span className="auth-pill">포트폴리오용 AI 분석 서비스</span>
         <h1>
-          Git 변경 흐름을
+          프로젝트 변경 이력을
           <br />
-          <em>한 화면에서</em> 설명하세요.
+          <em>한 번에 설명</em>해보세요.
         </h1>
         <p>
-          가입 후 Git 산출물 업로드 분석과 GitHub 연동 분석 흐름을 모두 확인할 수 있습니다.
+          파일 업로드 분석과 GitHub 연동 분석을 모두 지원하는 형태로 화면 흐름을 구성했습니다.
         </p>
         <div className="auth-illustration" aria-hidden="true">
           <img alt="" src={heroImage} />
@@ -50,12 +50,14 @@ const SignupPage = ({ onNavigate }) => {
       <section className="auth-form-area">
         <form className="login-card" onSubmit={signup}>
           <h2>회원가입</h2>
-          <p>포트폴리오 데모 계정을 생성합니다.</p>
-          <label>이름<input name="name" placeholder="이름을 입력하세요" defaultValue="이채훈" /></label>
-          <label>이메일<input name="email" placeholder="이메일 주소를 입력하세요" type="email" /></label>
-          <label>비밀번호<input name="password" placeholder="비밀번호를 입력하세요" type="password" /></label>
-          <label className="check-row"><input defaultChecked type="checkbox" /> 서비스 이용약관과 분석 데이터 처리 안내에 동의합니다.</label>
-          <button type="submit">가입하고 시작하기</button>
+          <p>기본 계정을 만들고 분석 플로우를 시작하세요.</p>
+          <label>이름<input name="name" placeholder="이름" defaultValue="이채훈" /></label>
+          <label>이메일<input name="email" placeholder="이메일 주소" type="email" defaultValue="chaehoon@example.com" /></label>
+          <label>비밀번호<input name="password" placeholder="비밀번호" type="password" defaultValue="demo1234" /></label>
+          <button type="submit">회원가입</button>
+          <button className="github-button" type="button" onClick={() => notify.info("GitHub OAuth 연동 예정입니다.")}>
+            GitHub 계정으로 시작
+          </button>
           <p className="signup-text">이미 계정이 있으신가요? <button type="button" onClick={() => onNavigate("auth")}>로그인</button></p>
         </form>
       </section>

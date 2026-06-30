@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
-import asyncpg
 from fastapi import HTTPException, Response, status
 
 from core.security import create_session_id, verify_password
@@ -12,7 +11,7 @@ from utils.rediscl import delete_session, get_session, set_session
 from utils.tokenset import create_login_token, read_login_token
 
 
-def user_payload(user: asyncpg.Record) -> dict[str, Any]:
+def user_payload(user: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "id": user["id"],
         "email": user["email"],
@@ -21,14 +20,13 @@ def user_payload(user: asyncpg.Record) -> dict[str, Any]:
 
 
 async def authenticate_or_create_user(
-    connection: asyncpg.Connection,
     email: str,
     password: str,
     name: str | None,
-) -> asyncpg.Record:
-    user = await find_user_by_email(connection, email)
+) -> dict[str, Any]:
+    user = find_user_by_email(email)
     if user is None:
-        return await create_user(connection, email, password, name)
+        return create_user(email, password, name)
 
     if not verify_password(password, user["password_hash"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
@@ -37,19 +35,18 @@ async def authenticate_or_create_user(
 
 
 async def register_user(
-    connection: asyncpg.Connection,
     email: str,
     password: str,
     name: str | None,
-) -> asyncpg.Record:
-    user = await find_user_by_email(connection, email)
+) -> dict[str, Any]:
+    user = find_user_by_email(email)
     if user is not None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already exists")
 
-    return await create_user(connection, email, password, name)
+    return create_user(email, password, name)
 
 
-async def issue_login_cookie(response: Response, user: asyncpg.Record) -> None:
+async def issue_login_cookie(response: Response, user: Mapping[str, Any]) -> None:
     ttl_seconds = settings.session_ttl_seconds
     uuid = create_session_id()
     token = create_login_token(uuid, user["id"])
@@ -65,6 +62,12 @@ async def issue_login_cookie(response: Response, user: asyncpg.Record) -> None:
         samesite="lax",
         path="/",
     )
+
+
+async def refresh_login_cookie(response: Response, token: str | None) -> dict[str, Any]:
+    user = await get_current_user(token)
+    await issue_login_cookie(response, user)
+    return user
 
 
 async def get_current_user(token: str | None) -> dict[str, Any]:

@@ -1,11 +1,11 @@
 import MessageTypeBarChart from "@components/charts/MessageTypeBarChart";
-import { notify } from "@utils/feedback";
 import PageShell from "@pages/PageShell";
+import { notify } from "@utils/feedback";
 
 const messages = [
-  ["feat(auth): 로그인 유지 토큰 갱신 흐름 추가", "feat", "auth", "로그인 유지"],
-  ["fix(auth): 세션 만료 시 사용자 상태 복원 실패 수정", "fix", "auth", "세션 처리"],
-  ["refactor(auth): 인증 설정을 settings 기반으로 분리", "refactor", "auth", "구조 개선"],
+  { text: "feat(auth): 로그인 유지 토큰 갱신 흐름 추가", type: "feat", scope: "auth", tone: "추천" },
+  { text: "fix(auth): 새로고침 후 세션 복원 실패 수정", type: "fix", scope: "auth", tone: "안정화" },
+  { text: "refactor(auth): 인증 API 호출 구조 정리", type: "refactor", scope: "auth", tone: "구조 개선" },
 ];
 
 const messageStats = [
@@ -17,32 +17,38 @@ const messageStats = [
 
 const CommitMessagePage = ({ currentPage, onNavigate }) => {
   return (
-    <PageShell currentPage={currentPage} onNavigate={onNavigate} title="AI 커밋 메시지 제안" description="분석 결과를 바탕으로 메시지를 선택하고 복사합니다.">
-      <section className="commit-message-layout">
+    <PageShell currentPage={currentPage} onNavigate={onNavigate} title="커밋 메시지 생성" description="AI 추천 메시지를 선택하거나 수정해서 사용할 수 있습니다.">
+      <section className="commit-message-layout refined-message-layout">
         <div className="message-list">
-          {messages.map(([message, type, scope, tag]) => (
-            <article className="message-card" key={message}>
-              <span className="recommend-badge">AI 추천</span>
-              <code>{message}</code>
-              <div>
-                <span>{type}</span>
-                <span>{scope}</span>
-                <span>{tag}</span>
+          {messages.map((message, index) => (
+            <article className={index === 0 ? "message-card selected-message" : "message-card"} key={message.text}>
+              <div className="message-card-head">
+                <span className="recommend-badge">AI {message.tone}</span>
+                <button type="button" onClick={() => notify.success("커밋 메시지를 복사했습니다.")}>복사</button>
               </div>
-              <button type="button" onClick={() => notify.success("커밋 메시지를 복사했습니다.")}>복사</button>
+              <code>{message.text}</code>
+              <div className="message-tags">
+                <span>{message.type}</span>
+                <span>{message.scope}</span>
+                <span>{message.tone}</span>
+              </div>
             </article>
           ))}
         </div>
-        <aside className="page-card commit-side-card">
+
+        <aside className="page-card commit-side-card refined-commit-side">
           <h2>이번 분석 요약</h2>
           <div className="commit-mini-summary">
             <span><b>128</b>커밋</span>
             <span><b>42</b>변경 파일</span>
             <span><b>8</b>리뷰 필요</span>
           </div>
-          <p>주요 변경 유형은 기능 추가와 리팩터링이며 인증 영역의 메시지는 Conventional Commits 규칙이 적합합니다.</p>
+          <p>인증 흐름, 세션 복구, 설정 구조 변경이 핵심이므로 `auth` scope 메시지를 우선 추천합니다.</p>
           <MessageTypeBarChart data={messageStats} />
-          <button type="button" onClick={() => notify.info("모든 메시지를 내보냅니다.")}>모두 복사하기</button>
+          <div className="side-actions">
+            <button type="button" onClick={() => notify.info("대표 메시지를 복사했습니다.")}>대표 메시지 복사</button>
+            <button type="button" onClick={() => onNavigate("history")}>내역으로 이동</button>
+          </div>
         </aside>
       </section>
     </PageShell>
