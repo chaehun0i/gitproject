@@ -1,12 +1,14 @@
-import heroImage from "@assets/images/commitlens-hero.png";
+import { ProductHeroVisual } from "@components/common/ProductVisuals";
 import "@styles/pages/landing.css";
 
 const usageSteps = [
-  ["1. 자료 준비", "GitHub를 연결하거나 git log, git diff 산출물을 준비합니다."],
-  ["2. 분석 설정", "분석 방식과 범위를 선택하고 AI 분석을 시작합니다."],
-  ["3. 결과 확인", "변경 요약, 위험 파일, 추천 메시지를 한 화면에서 확인합니다."],
-  ["4. 메시지 활용", "AI가 제안한 커밋 메시지를 복사해 바로 사용합니다."],
+  ["GitHub 연결", "저장소를 연결하거나 Git 명령어 산출물을 업로드합니다."],
+  ["분석 설정", "브랜치, 커밋 범위, 분석 옵션을 선택합니다."],
+  ["AI 분석 실행", "Git Parser, Diff Parser, AI 요약 파이프라인을 실행합니다."],
+  ["결과 활용", "리뷰 포인트와 추천 커밋 메시지를 팀 작업에 반영합니다."],
 ];
+
+const integrations = ["GitHub", "GitLab", "Docker", "AWS", "Redis", "MariaDB"];
 
 const stats = [
   ["98%+", "변경 흐름 이해"],
@@ -26,7 +28,7 @@ const Dashboard = ({ onNavigate }) => {
         <nav aria-label="서비스 메뉴">
           <a href="#features">기능</a>
           <a href="#how">사용 방법</a>
-          <a href="#pricing">요금제</a>
+          <a href="#pipeline">파이프라인</a>
           <a href="#about">소개</a>
         </nav>
         <div>
@@ -37,22 +39,26 @@ const Dashboard = ({ onNavigate }) => {
 
       <section className="landing-hero" id="features">
         <div className="landing-copy">
+          <span className="landing-kicker">AI Commit Analysis Workspace</span>
           <h1>
-            AI가 코드 변경을 분석하고
+            AI가 커밋과 코드 변경을 분석해
             <br />
-            <span>더 나은 커밋</span>을 제안합니다
+            <span>개발 인사이트</span>를 제공합니다
           </h1>
           <p>
-            Git 산출물과 GitHub 변경 이력을 읽고 변경 요약, 위험 포인트, 커밋 메시지를
-            포트폴리오 프로젝트에 맞는 흐름으로 보여줍니다.
+            GitHub 연동과 Git 명령어 산출물 업로드를 모두 지원합니다. 커밋 흐름, 코드 diff,
+            위험 변경, 추천 커밋 메시지를 하나의 포트폴리오형 SaaS 화면에서 확인할 수 있습니다.
           </p>
           <div className="landing-actions">
             <button type="button" onClick={() => onNavigate("signup")}>무료로 시작하기</button>
             <button type="button" onClick={() => onNavigate("auth")}>로그인하고 데모 보기</button>
           </div>
+          <div className="integration-strip" aria-label="개발 도구 연동">
+            {integrations.map((item) => <span key={item}>{item}</span>)}
+          </div>
         </div>
         <div className="landing-visual" aria-hidden="true">
-          <img alt="" src={heroImage} />
+          <ProductHeroVisual />
           <div className="landing-badge">AI 분석 완료</div>
         </div>
       </section>
@@ -60,12 +66,28 @@ const Dashboard = ({ onNavigate }) => {
       <section className="landing-steps" id="how">
         <h2>어떻게 사용하나요?</h2>
         <div>
-          {usageSteps.map(([title, text]) => (
+          {usageSteps.map(([title, text], index) => (
             <article key={title}>
-              <span>&lt;/&gt;</span>
+              <span>{index + 1}</span>
               <h3>{title}</h3>
               <p>{text}</p>
             </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-pipeline" id="pipeline">
+        <div>
+          <span className="landing-kicker">Backend Pipeline</span>
+          <h2>Parser, AI 분석, DB 집계가 화면에 드러나는 구조</h2>
+          <p>
+            Git 로그와 diff를 수집하고, 변경 파일을 파싱한 뒤 AI 분석 결과를 DB에 저장하는 흐름을
+            사용자가 이해할 수 있도록 모든 주요 화면에 진행 상태와 집계 데이터를 배치했습니다.
+          </p>
+        </div>
+        <div className="pipeline-cards">
+          {["Git Parser", "Diff Parser", "AI Summary", "MariaDB", "Redis Session"].map((item) => (
+            <span key={item}>{item}</span>
           ))}
         </div>
       </section>

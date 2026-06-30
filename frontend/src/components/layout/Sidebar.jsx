@@ -6,25 +6,25 @@ import "@styles/layout/sidebar.css";
 
 const navGroups = [
   {
-    label: "워크스페이스",
+    label: "Workspace",
     items: [
-      ["home", "홈", "H"],
-      ["projects", "프로젝트", "P"],
-      ["newAnalysis", "새 분석", "N"],
-      ["history", "분석 내역", "L"],
+      ["home", "홈", "⌘"],
+      ["projects", "프로젝트", "R"],
+      ["newAnalysis", "새 분석", "+"],
+      ["history", "분석 내역", "H"],
     ],
   },
   {
-    label: "분석 결과",
+    label: "Analysis",
     items: [
-      ["result", "결과 요약", "R"],
-      ["detail", "상세 분석", "D"],
-      ["commitMessage", "커밋 메시지", "C"],
+      ["result", "결과 요약", "S"],
+      ["detail", "파일 상세", "D"],
+      ["commitMessage", "커밋 메시지", "M"],
     ],
   },
   {
-    label: "계정",
-    items: [["myPage", "설정", "S"]],
+    label: "Account",
+    items: [["myPage", "설정", "G"]],
   },
 ];
 
@@ -36,9 +36,11 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
   const handleLogout = async () => {
     try {
       await logoutUser();
+    } catch {
+      notify.info("로컬 데모 상태로 로그아웃합니다.");
     } finally {
       dispatch(logoutAction());
-      notify.info("로그아웃되었습니다.");
+      notify.success("로그아웃되었습니다.");
       onNavigate("dashboard");
     }
   };
@@ -46,11 +48,11 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
   return (
     <aside className="sidebar">
       <div className="sidebar-head">
-        <button className="brand" type="button" onClick={() => onNavigate("home")}>
-          <span className="brand-mark">CL</span>
+        <button className="brand" type="button" onClick={() => onNavigate("home")} title="CommitLens 홈">
+          <span className="brand-mark">&lt;/&gt;</span>
           <div>
             <strong>CommitLens</strong>
-            <p>AI Git 분석 도구</p>
+            <p>AI Git 분석 워크스페이스</p>
           </div>
         </button>
         <button
@@ -58,20 +60,21 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
           type="button"
           aria-label={isCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
           onClick={onToggle}
+          title={isCollapsed ? "펼치기" : "접기"}
         >
-          {isCollapsed ? "›" : "‹"}
+          {isCollapsed ? "→" : "←"}
         </button>
       </div>
 
       <div className="sidebar-status">
         <span />
         <div>
-          <b>개발 환경</b>
-          <p>MariaDB 3307 · Redis</p>
+          <b>Local Runtime</b>
+          <p>MariaDB 3307 · Redis · API /api</p>
         </div>
       </div>
 
-      <nav className="side-nav" aria-label="주 메뉴">
+      <nav className="side-nav" aria-label="주요 메뉴">
         {navGroups.map((group) => (
           <div className="nav-group" key={group.label}>
             <span>{group.label}</span>
@@ -91,6 +94,14 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
         ))}
       </nav>
 
+      <div className="sidebar-pipeline" aria-hidden="true">
+        <span>Git</span>
+        <i />
+        <span>AI</span>
+        <i />
+        <span>DB</span>
+      </div>
+
       <div className="profile">
         <span>{initials}</span>
         <div>
@@ -98,7 +109,7 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
           <p>{user.email}</p>
         </div>
         <button className="logout-button" type="button" onClick={handleLogout}>
-          <i>Q</i>
+          <i>⏻</i>
           <span className="logout-text">로그아웃</span>
         </button>
       </div>

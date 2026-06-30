@@ -10,7 +10,7 @@ export const notify = {
 };
 
 export const confirmAction = ({
-  title = "진행할까요?",
+  title = "작업을 진행할까요?",
   text = "이 작업은 되돌리기 어려울 수 있습니다.",
   confirmButtonText = "확인",
   cancelButtonText = "취소",
@@ -23,9 +23,11 @@ export const confirmAction = ({
     confirmButtonText,
     cancelButtonText,
     showCancelButton: true,
-    confirmButtonColor: "#315df4",
-    cancelButtonColor: "#64748b",
+    confirmButtonColor: "#4F46E5",
+    cancelButtonColor: "#64748B",
     reverseButtons: true,
+    background: "#FFFFFF",
+    color: "#0F172A",
   });
 };
 
@@ -35,6 +37,8 @@ export const showWarning = (title, text) => {
     text,
     icon: "warning",
     confirmButtonText: "확인",
-    confirmButtonColor: "#315df4",
+    confirmButtonColor: "#4F46E5",
+    background: "#FFFFFF",
+    color: "#0F172A",
   });
 };

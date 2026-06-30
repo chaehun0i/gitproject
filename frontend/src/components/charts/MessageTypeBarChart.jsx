@@ -9,7 +9,7 @@ const MessageTypeBarChart = ({ data }) => {
           <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 12 }} tickLine={false} />
           <YAxis tick={{ fill: "#64748b", fontSize: 12 }} tickLine={false} />
           <Tooltip />
-          <Bar dataKey="value" fill="#315df4" radius={[8, 8, 3, 3]} />
+          <Bar dataKey="value" fill="#4F46E5" radius={[8, 8, 3, 3]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

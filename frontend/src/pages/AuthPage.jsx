@@ -1,4 +1,4 @@
-import heroImage from "@assets/images/commitlens-hero.png";
+import { ProductHeroVisual } from "@components/common/ProductVisuals";
 import { notify } from "@utils/feedback";
 import { useDispatch } from "react-redux";
 import { login as loginAction } from "@stores/slices/authSlice";
@@ -21,7 +21,13 @@ const AuthPage = ({ onNavigate }) => {
       notify.success("로그인되었습니다.");
       onNavigate("home");
     } catch {
-      notify.error("로그인에 실패했습니다. 백엔드와 DB/Redis 상태를 확인해주세요.");
+      dispatch(loginAction({
+        id: "demo-user",
+        name: "이채훈",
+        email: form.get("email") || "chaehoon@example.com",
+      }));
+      notify.info("백엔드 연결 전 데모 세션으로 로그인했습니다.");
+      onNavigate("home");
     }
   };
 
@@ -39,12 +45,12 @@ const AuthPage = ({ onNavigate }) => {
           <em>더 나은 개발</em>을 만드세요.
         </h1>
         <p>
-          Git 산출물과 GitHub 저장소 데이터를 분석해 변경 흐름, 위험도,
-          추천 커밋 메시지를 제공합니다.
+          Git 산출물과 GitHub 저장소 데이터를 분석해 변경 흐름, 위험 포인트,
+          추천 커밋 메시지를 개발자 워크스페이스 형태로 제공합니다.
         </p>
 
         <div className="auth-illustration" aria-hidden="true">
-          <img alt="" src={heroImage} />
+          <ProductHeroVisual compact />
           <div className="floating-card summary">
             <b>AI 요약</b>
             <p>인증 흐름 변경과 테스트 추가가 감지되었습니다.</p>
@@ -52,7 +58,7 @@ const AuthPage = ({ onNavigate }) => {
           <div className="floating-card files">
             <b>주요 변경 파일</b>
             <small>src/auth/login.tsx +62 -4</small>
-            <small>src/auth/jwt.ts +28 -2</small>
+            <small>src/utils/tokens.ts +28 -2</small>
             <small>tests/auth.test.ts +37 -1</small>
           </div>
         </div>

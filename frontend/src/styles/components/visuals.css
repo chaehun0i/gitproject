@@ -1,0 +1,205 @@
+.product-visual,
+.pipeline-visual,
+.empty-visual,
+.runtime-visual,
+.insight-visual {
+  display: block;
+  width: min(100%, 680px);
+  height: auto;
+  overflow: visible;
+}
+
+.product-visual.compact {
+  width: min(100%, 520px);
+}
+
+.visual-glow {
+  fill: url(#visualSoft);
+  opacity: 0.9;
+}
+
+.empty-glow {
+  fill: #eef2ff;
+  opacity: 0.95;
+}
+
+.visual-panel rect {
+  fill: rgba(255, 255, 255, 0.88);
+  stroke: rgba(79, 70, 229, 0.14);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 24px 32px rgba(79, 70, 229, 0.12));
+}
+
+.visual-sidebar {
+  fill: #111827 !important;
+}
+
+.visual-line,
+.visual-code,
+.runtime-line {
+  fill: #c7d2fe;
+}
+
+.visual-line.strong,
+.visual-code.dark {
+  fill: #4f46e5;
+}
+
+.visual-line.green {
+  fill: rgba(34, 197, 94, 0.36);
+}
+
+.visual-line.red {
+  fill: rgba(239, 68, 68, 0.25);
+}
+
+.visual-line.cyan,
+.visual-code.cyan,
+.runtime-line.cyan {
+  fill: #06b6d4;
+}
+
+.visual-line.violet,
+.visual-code.violet {
+  fill: #7c3aed;
+}
+
+.visual-graph,
+.visual-flow {
+  fill: none;
+  stroke: url(#visualGradient);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 8;
+}
+
+.visual-flow {
+  opacity: 0.35;
+  stroke-width: 4;
+}
+
+.visual-node {
+  fill: #4f46e5;
+  stroke: #ffffff;
+  stroke-width: 4;
+}
+
+.visual-node.violet {
+  fill: #7c3aed;
+}
+
+.visual-node.cyan {
+  fill: #06b6d4;
+}
+
+.visual-bar {
+  fill: #4f46e5;
+}
+
+.visual-bar.violet {
+  fill: #7c3aed;
+}
+
+.visual-bar.cyan {
+  fill: #06b6d4;
+}
+
+.visual-ai,
+.empty-plus,
+.insight-core {
+  fill: url("#visualGradient");
+  filter: drop-shadow(0 18px 26px rgba(79, 70, 229, 0.22));
+}
+
+.visual-ai-mark,
+.empty-plus-line,
+.insight-spark {
+  fill: none;
+  stroke: #ffffff;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.pipeline-bg,
+.empty-folder,
+.runtime-bg {
+  fill: #ffffff;
+  stroke: rgba(79, 70, 229, 0.14);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 22px 34px rgba(15, 23, 42, 0.08));
+}
+
+.pipeline-line {
+  stroke: url(#pipelineGradient);
+  stroke-width: 5;
+}
+
+.runtime-link {
+  fill: none;
+  stroke: #06b6d4;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.pipeline-dot {
+  fill: #e5e7eb;
+  stroke: #ffffff;
+  stroke-width: 6;
+}
+
+.pipeline-dot.done,
+.pipeline-dot.active {
+  fill: url("#pipelineGradient");
+}
+
+.pipeline-dot.active {
+  filter: drop-shadow(0 0 16px rgba(79, 70, 229, 0.45));
+}
+
+.pipeline-card {
+  fill: #eef2ff;
+  stroke: rgba(79, 70, 229, 0.1);
+}
+
+.empty-tab {
+  fill: #eef2ff;
+  stroke: rgba(79, 70, 229, 0.14);
+  stroke-width: 1.5;
+}
+
+.empty-branch {
+  fill: none;
+  stroke: #7c3aed;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.runtime-terminal {
+  fill: #0f172a;
+}
+
+.runtime-dot.red {
+  fill: #ef4444;
+}
+
+.runtime-dot.yellow {
+  fill: #f59e0b;
+}
+
+.runtime-dot.green {
+  fill: #22c55e;
+}
+
+.runtime-db ellipse,
+.runtime-db path {
+  fill: rgba(238, 242, 255, 0.86);
+  stroke: #7c3aed;
+  stroke-width: 3;
+}
+
+.insight-orbit {
+  fill: none;
+  stroke: rgba(79, 70, 229, 0.2);
+  stroke-dasharray: 9 10;
+  stroke-width: 4;
+}

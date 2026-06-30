@@ -10,7 +10,7 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
 
   const agreeAndStart = () => {
     setTermsOpen(false);
-    const label = analysisType === "gitFiles" ? "Git 산출물 업로드" : "GitHub 연동";
+    const label = analysisType === "gitFiles" ? "Git 산출물 업로드" : "GitHub 저장소 연동";
     notify.success(`${label} 분석을 시작합니다.`);
     onStart?.(analysisType);
   };
@@ -24,7 +24,7 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
           <Dialog.Content className="dialog-content analysis-dialog">
             <div className="dialog-head">
               <Dialog.Title>새 분석 만들기</Dialog.Title>
-              <Dialog.Close aria-label="닫기">x</Dialog.Close>
+              <Dialog.Close aria-label="닫기">×</Dialog.Close>
             </div>
 
             <div className="analysis-tabs" role="tablist" aria-label="분석 방식">
@@ -71,17 +71,17 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
                 <label>
                   GitHub 저장소
                   <select>
-                    <option>ai-commit-analyzer</option>
-                    <option>backend-server</option>
-                    <option>frontend-app</option>
+                    <option>chaehoon/ai-commit-analyzer</option>
+                    <option>chaehoon/backend-server</option>
+                    <option>chaehoon/frontend-app</option>
                   </select>
                 </label>
                 <label>
                   브랜치
                   <select>
+                    <option>feature/FE_all</option>
                     <option>main</option>
                     <option>develop</option>
-                    <option>feature/refactor</option>
                   </select>
                 </label>
                 <label>

@@ -1,6 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-const COLORS = ["#315df4", "#8b5cf6", "#14b8a6", "#cbd5e1"];
+const COLORS = ["#4F46E5", "#7C3AED", "#06B6D4", "#22C55E"];
 
 const ChangeTypeDonutChart = ({ data }) => {
   return (

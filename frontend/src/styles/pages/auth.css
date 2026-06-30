@@ -30,7 +30,7 @@
 }
 
 .auth-brand span {
-  color: #4f6df5;
+  color: var(--primary);
   font-size: 1.8rem;
   font-weight: 900;
 }
@@ -40,8 +40,8 @@
   margin-bottom: clamp(12px, 2.2vh, 24px);
   padding: 8px 14px;
   border-radius: 999px;
-  color: #3b5bdb;
-  background: #e9efff;
+  color: var(--primary);
+  background: #eef2ff;
   font-weight: 800;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .auth-visual h1 em {
-  color: #4b63f0;
+  color: var(--primary);
   font-style: normal;
 }
 
@@ -81,13 +81,12 @@
   background: linear-gradient(135deg, rgba(49, 93, 244, 0.1), rgba(139, 92, 246, 0.08));
 }
 
-.auth-illustration img {
+.auth-illustration .product-visual {
   position: relative;
   z-index: 1;
   display: block;
   width: min(520px, 100%);
   max-height: clamp(160px, 31vh, 320px);
-  object-fit: contain;
   filter: drop-shadow(0 28px 42px rgba(37, 99, 235, 0.22));
 }
 
@@ -139,7 +138,7 @@
   place-items: center;
   margin: 0 auto;
   border-radius: 50%;
-  color: #4b63f0;
+  color: var(--primary);
   background: #eef3ff;
   font-weight: 900;
 }
@@ -221,7 +220,7 @@
 .auth-options a,
 .signup-text button {
   border: 0;
-  color: #4b63f0;
+  color: var(--primary);
   background: transparent;
   font-weight: 900;
 }
@@ -230,14 +229,16 @@
   border: 0;
   border-radius: 8px;
   color: #ffffff;
-  background: linear-gradient(135deg, #4b63f0, #304fe2);
+  background: var(--gradient-ai);
   font-weight: 900;
+  box-shadow: 0 16px 34px rgba(79, 70, 229, 0.22);
 }
 
 .login-card .github-button {
   border: 1px solid #d8e0ef;
   color: var(--text);
   background: #ffffff;
+  box-shadow: none;
 }
 
 .divider {
@@ -271,6 +272,27 @@
   line-height: 1.5;
 }
 
+.login-card label {
+  color: var(--title);
+}
+
+.login-card input {
+  border-color: #dbe5f3;
+  background: #fbfdff;
+}
+
+.login-card input:focus {
+  outline: 3px solid rgba(79, 70, 229, 0.12);
+  border-color: rgba(79, 70, 229, 0.55);
+}
+
+.auth-brand,
+.auth-brand:hover,
+.signup-text button:hover,
+.auth-options a:hover {
+  transform: none;
+}
+
 @media (max-height: 820px) {
   .auth-features small,
   .auth-visual footer,
@@ -290,6 +312,7 @@
 
   .login-card {
     gap: 9px;
+    padding: 22px;
   }
 }
 
