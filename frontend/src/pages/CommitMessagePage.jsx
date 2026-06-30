@@ -105,8 +105,9 @@ const CommitMessagePage = ({ currentPage, onNavigate }) => {
           </div>
           <p>
             인증 흐름과 세션 복구 변경이 중심이므로 auth scope 메시지를 우선 추천합니다.
-            추천 근거는 AI 분석 결과와 diff parser 집계 데이터를 기반으로 표시됩니다.
+            추천 근거는 변경 요약과 파일별 분석 결과를 바탕으로 표시됩니다.
           </p>
+          <p className="chart-description">추천 메시지 타입별 분포입니다. 이번 변경에 어떤 메시지 유형이 어울리는지 비교할 수 있습니다.</p>
           <MessageTypeBarChart data={messageStats} />
           <div className="side-actions">
             <button type="button" onClick={() => copyMessage(recommendedMessages[0].text)}>대표 메시지 복사</button>

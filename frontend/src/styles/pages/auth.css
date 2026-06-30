@@ -31,8 +31,8 @@
 
 .auth-brand img {
   display: block;
-  width: min(230px, 60vw);
-  height: 48px;
+  width: min(236px, 62vw);
+  height: 50px;
   object-fit: contain;
   object-position: left center;
 }
@@ -88,7 +88,7 @@
   display: grid;
   gap: 12px;
   width: min(500px, 100%);
-  margin-top: clamp(18px, 5vh, 46px);
+  margin-top: clamp(18px, 4vh, 34px);
   padding: 18px;
   border: 1px solid rgba(79, 70, 229, 0.14);
   border-radius: 14px;
@@ -265,7 +265,7 @@
 
 .login-card {
   display: grid;
-  gap: clamp(10px, 1.6vh, 16px);
+  gap: clamp(10px, 1.45vh, 15px);
   width: min(560px, 100%);
   padding: clamp(24px, 3.6vw, 42px);
   border: 1px solid #dfe7f3;

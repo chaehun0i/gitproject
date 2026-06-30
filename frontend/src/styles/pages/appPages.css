@@ -187,9 +187,9 @@
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1fr);
   gap: 22px;
-  min-height: 320px;
+  min-height: 292px;
   overflow: hidden;
-  padding: 30px;
+  padding: 26px;
   border: 1px solid rgba(79, 70, 229, 0.16);
   border-radius: 12px;
   background:
@@ -210,7 +210,7 @@
   max-width: 620px;
   margin: 0;
   color: var(--title);
-  font-size: clamp(1.9rem, 3vw, 3.2rem);
+  font-size: clamp(1.75rem, 2.7vw, 2.85rem);
   line-height: 1.17;
 }
 
@@ -250,13 +250,13 @@
 .workspace-hero-visual {
   position: relative;
   display: grid;
-  min-height: 280px;
+  min-height: 248px;
   place-items: center;
 }
 
 .workspace-hero-visual img {
   width: min(640px, 100%);
-  max-height: 320px;
+  max-height: 286px;
   object-fit: contain;
   filter: drop-shadow(0 26px 38px rgba(79, 70, 229, 0.16));
 }
@@ -569,8 +569,12 @@
 }
 
 .repo-actions {
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-top: auto;
+}
+
+.repo-actions button {
+  flex: 1 1 150px;
 }
 
 .progress-bar,
@@ -988,6 +992,14 @@ pre {
   box-shadow: var(--shadow);
 }
 
+.message-list {
+  align-content: start;
+}
+
+.message-card-head {
+  align-items: flex-start;
+}
+
 .analysis-preview-card code {
   display: block;
   overflow-x: auto;
@@ -1254,7 +1266,7 @@ pre {
 
 .settings-overview {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
 }
 
@@ -1272,6 +1284,7 @@ pre {
 
 .settings-profile-panel {
   grid-template-columns: 72px minmax(0, 1fr) auto;
+  max-width: none;
 }
 
 .settings-profile-panel h2,
@@ -1590,7 +1603,7 @@ pre {
 
 .detail-workspace {
   display: grid;
-  grid-template-columns: minmax(260px, 0.34fr) minmax(0, 1fr) minmax(300px, 0.45fr);
+  grid-template-columns: minmax(250px, 0.32fr) minmax(0, 1fr) minmax(300px, 0.42fr);
   gap: 18px;
   align-items: start;
 }
@@ -1598,6 +1611,7 @@ pre {
 .file-navigator {
   display: grid;
   gap: 10px;
+  align-content: start;
 }
 
 .file-search {
@@ -1716,6 +1730,7 @@ pre {
 .detail-ai-panel {
   position: sticky;
   top: 20px;
+  align-content: start;
 }
 
 .pipeline-meta-card .summary-points span {
@@ -1775,6 +1790,135 @@ pre {
 
 .danger-zone-card button {
   background: var(--error) !important;
+}
+
+/* Final visual QA polish */
+.repo-favorite {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--primary);
+  background: #eef2ff;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.chart-description,
+.table-intro p {
+  margin: 4px 0 12px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.chart-card .chart-description,
+.commit-side-card .chart-description {
+  max-width: 640px;
+}
+
+.commit-side-card .chart-description {
+  margin-top: 10px;
+}
+
+.home-grid .chart-card {
+  align-content: start;
+}
+
+.home-list-card .panel-title,
+.chart-card .panel-title {
+  margin-bottom: 4px;
+}
+
+.analysis-side-stack .summary-points {
+  gap: 8px;
+}
+
+.analysis-side-stack .summary-points span {
+  min-height: 34px;
+}
+
+.table-intro {
+  margin-bottom: 14px;
+}
+
+.table-intro h2 {
+  margin: 0;
+}
+
+.profile-edit-dialog {
+  display: grid;
+  gap: 14px;
+}
+
+.profile-edit-dialog p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.profile-edit-dialog button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: var(--gradient-ai);
+  font-weight: 900;
+}
+
+.page-card button,
+.table-card button,
+.dialog-content button {
+  white-space: nowrap;
+}
+
+.pagination-row button:not(:disabled):hover {
+  color: #ffffff;
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+.toggle-row input {
+  position: relative;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 22px;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: #cbd5e1;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.toggle-row input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+  transition: transform 0.18s ease;
+}
+
+.toggle-row input:checked {
+  background: var(--gradient-ai);
+}
+
+.toggle-row input:checked::after {
+  transform: translateX(20px);
+}
+
+@media (max-width: 700px) {
+  .page-card button,
+  .table-card button,
+  .dialog-content button {
+    white-space: normal;
+  }
 }
 
 @media (max-width: 1180px) {

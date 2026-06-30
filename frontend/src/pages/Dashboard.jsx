@@ -40,15 +40,13 @@ const Dashboard = ({ onNavigate }) => {
             <br />
             변경 내용을 이해하고,
             <br />
-            <span>메시지까지 추천받으세요.</span>
+            <span>메시지 추천받으세요.</span>
           </h1>
           <p>
             CommitLens는 복잡한 커밋 기록과 코드 변경을 사용자가 이해하기 쉬운 분석 결과로 정리합니다.
             리뷰 전에 확인할 내용과 커밋 메시지 후보를 한곳에서 확인하세요.
           </p>
           <div className="landing-actions">
-            <button type="button" onClick={() => onNavigate("signup")}>분석 시작하기</button>
-            <button type="button" onClick={() => onNavigate("auth")}>로그인</button>
           </div>
         </div>
         <div className="landing-product-card" aria-hidden="true">

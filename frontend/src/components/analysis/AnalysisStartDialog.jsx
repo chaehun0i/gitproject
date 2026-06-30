@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useMemo, useState } from "react";
 import { notify } from "@utils/feedback";
+import commitlensLogo from "@assets/images/commitlens-logo.png";
 import "@styles/components/dialog.css";
 
 const steps = ["분석 방식", "대상 선택", "옵션 선택", "시작 확인"];
@@ -48,9 +49,12 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
         <Dialog.Overlay className="dialog-overlay" />
         <Dialog.Content className="dialog-content analysis-dialog">
           <div className="dialog-head">
-            <div>
-              <Dialog.Title>새 분석 시작</Dialog.Title>
-              <Dialog.Description>분석할 방식과 범위를 차례로 선택합니다.</Dialog.Description>
+            <div className="dialog-title-block">
+              <img alt="CommitLens" src={commitlensLogo} />
+              <div>
+                <Dialog.Title>새 분석 시작</Dialog.Title>
+                <Dialog.Description>분석할 방식과 범위를 차례로 선택합니다.</Dialog.Description>
+              </div>
             </div>
             <Dialog.Close aria-label="닫기">×</Dialog.Close>
           </div>

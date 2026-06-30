@@ -1,4 +1,5 @@
 import SettingsDialog from "@components/common/SettingsDialog";
+import { useState } from "react";
 import { RuntimeVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
 
@@ -10,12 +11,14 @@ const settingsIntegrations = [
 ];
 
 const MyPage = ({ currentPage, onNavigate }) => {
+  const [profileVerified, setProfileVerified] = useState(false);
+
   return (
     <PageShell
       currentPage={currentPage}
       onNavigate={onNavigate}
       title="마이페이지 / 설정"
-      description="계정, 연동 상태, API 설정, 로컬 런타임 상태를 관리합니다."
+      description="계정 정보, 저장소 연동, 알림 설정을 관리합니다."
     >
       <section className="settings-overview">
         <article className="settings-profile-panel">
@@ -25,7 +28,24 @@ const MyPage = ({ currentPage, onNavigate }) => {
             <h2>이채훈</h2>
             <p>chaehoon@example.com</p>
           </div>
-          <button type="button">프로필 수정</button>
+          <SettingsDialog trigger={<button type="button">프로필 수정</button>} title="프로필 수정">
+            <div className="profile-edit-dialog">
+              {!profileVerified ? (
+                <>
+                  <p>계정 정보를 변경하기 전에 비밀번호를 한 번 더 확인합니다.</p>
+                  <label>현재 비밀번호<input placeholder="현재 비밀번호" type="password" /></label>
+                  <button type="button" onClick={() => setProfileVerified(true)}>확인</button>
+                </>
+              ) : (
+                <>
+                  <label>이름<input defaultValue="이채훈" placeholder="이름" /></label>
+                  <label>새 비밀번호<input placeholder="새 비밀번호" type="password" /></label>
+                  <label>새 비밀번호 확인<input placeholder="새 비밀번호 확인" type="password" /></label>
+                  <button type="button">저장</button>
+                </>
+              )}
+            </div>
+          </SettingsDialog>
         </article>
 
         <article className="settings-env-panel runtime-banner-card">

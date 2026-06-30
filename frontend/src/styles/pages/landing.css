@@ -32,8 +32,8 @@
 
 .landing-brand img {
   display: block;
-  width: min(210px, 42vw);
-  height: 44px;
+  width: min(224px, 46vw);
+  height: 48px;
   object-fit: contain;
   object-position: left center;
 }
@@ -70,7 +70,7 @@
   gap: 32px;
   align-items: center;
   width: min(1180px, 100%);
-  min-height: 430px;
+  min-height: 400px;
   margin: 28px auto 24px;
 }
 
@@ -130,7 +130,7 @@
 .landing-product-card {
   position: relative;
   overflow: hidden;
-  padding: 18px;
+  padding: 20px;
   border: 1px solid rgba(79, 70, 229, 0.14);
   border-radius: 14px;
   background:
@@ -239,7 +239,7 @@
 .landing-steps {
   width: min(1180px, 100%);
   margin: 0 auto;
-  padding: 30px 34px;
+  padding: 28px 32px;
   border: 1px solid #e3e9f7;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.82);

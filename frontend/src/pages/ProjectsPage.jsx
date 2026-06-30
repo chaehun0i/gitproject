@@ -229,7 +229,7 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
                       <h2>{project.name}</h2>
                       <p>{project.owner}/{project.repo} · {project.visibility} · {project.branch}</p>
                     </div>
-                    <button className="repo-more-button" type="button" aria-label="더보기">더보기</button>
+                    <span className="repo-favorite" aria-label={project.starred ? "즐겨찾기" : "일반 프로젝트"}>{project.starred ? "★" : "☆"}</span>
                   </div>
 
                   <div className="repo-meta-row">

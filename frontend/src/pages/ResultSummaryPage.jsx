@@ -70,10 +70,12 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
         </article>
         <article className="page-card chart-card">
           <h2>변경 유형 분포</h2>
+          <p className="chart-description">이번 분석에서 기능 추가, 수정, 리팩토링 비중을 비교할 수 있습니다.</p>
           <ChangeTypeDonutChart data={summaryChangeTypes} />
         </article>
         <article className="page-card chart-card wide">
-          <h2>AI 활동 요약</h2>
+          <h2>이번 분석에서 확인된 항목</h2>
+          <p className="chart-description">분석 과정에서 확인된 주요 항목의 흐름입니다. 검토할 변경이 많아진 구간을 확인하세요.</p>
           <ActivityLineChart values={[32, 58, 44, 71, 49, 82, 65, 92, 56, 74]} />
         </article>
         <article className="page-card risk-card result-review-card">

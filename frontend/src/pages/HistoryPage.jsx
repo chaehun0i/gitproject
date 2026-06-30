@@ -49,15 +49,21 @@ const HistoryPage = ({ currentPage, onNavigate }) => {
       <section className="history-grid">
         <article className="page-card history-summary">
           <h2>최근 30일 분석 흐름</h2>
+          <p className="chart-description">최근 분석 추이를 보여줍니다. 분석량이 늘어난 구간을 확인할 수 있습니다.</p>
           <ActivityLineChart values={[24, 44, 32, 68, 48, 76, 58, 82]} />
         </article>
         <article className="page-card history-summary">
           <h2>분석 방식 비율</h2>
+          <p className="chart-description">저장소 연결과 파일 업로드 분석 비율입니다. 자주 쓰는 분석 방식을 비교할 수 있습니다.</p>
           <ChangeTypeDonutChart data={sourceTypes} />
         </article>
       </section>
 
       <section className="table-card history-table">
+        <div className="table-intro">
+          <h2>최근 분석 기록</h2>
+          <p>프로젝트별 최근 분석 상태입니다. 결과 확인이 필요한 항목을 우선 확인하세요.</p>
+        </div>
         <div className="history-toolbar">
           <label>
             검색

@@ -10,7 +10,7 @@ const SettingsDialog = ({ trigger, title = "설정", children }) => {
         <Dialog.Content className="dialog-content">
           <div className="dialog-head">
             <Dialog.Title>{title}</Dialog.Title>
-            <Dialog.Close aria-label="닫기">x</Dialog.Close>
+            <Dialog.Close aria-label="닫기">×</Dialog.Close>
           </div>
           {children}
         </Dialog.Content>

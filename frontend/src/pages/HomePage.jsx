@@ -35,8 +35,6 @@ const HomePage = ({ currentPage, onNavigate }) => {
     <PageShell
       currentPage={currentPage}
       onNavigate={onNavigate}
-      title="작업 공간"
-      description="최근 분석과 검토할 변경 사항을 한 곳에서 확인합니다."
     >
       <section className="workspace-hero">
         <div className="workspace-hero-copy">
@@ -101,6 +99,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
             <h2>커밋 활동 추세</h2>
             <span className="recommend-badge">30일</span>
           </div>
+          <p className="chart-description">최근 커밋 활동 흐름입니다. 작업량이 늘어난 구간과 분석이 필요한 시점을 확인하세요.</p>
           <ActivityLineChart values={[28, 42, 36, 58, 49, 72, 64, 88, 73, 95, 69, 82]} />
         </article>
       </section>
