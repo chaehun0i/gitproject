@@ -8,7 +8,7 @@ from fastapi import HTTPException, UploadFile, status
 
 from src.ai.risk_detector import detect_risks
 from src.ai.summary_generator import generate_commit_messages, generate_summary
-from src.domains.analysis_status import ANALYZING, COMPLETED, FAILED, PARSING, status_label
+from src.domains.analysis_status import AI_GENERATING, ANALYZING, COMPLETED, FAILED, PARSING, status_label
 from src.models.analysis_runs import AnalysisRunCreate
 from src.parsers.diff_parser import parse_unified_diff
 from src.parsers.zip_parser import parse_zip_file
@@ -128,13 +128,15 @@ async def create_analysis_run(payload: AnalysisRunCreate, user: dict[str, Any]) 
 
 def _parse_uploaded_artifact(stored: dict[str, Any]) -> list[dict[str, Any]]:
     filename = stored["original_filename"]
+    stored_path = stored["stored_path"]
     suffix = Path(filename).suffix.lower()
     if suffix == ".zip":
-        return parse_zip_file(stored["stored_path"])
-    return parse_unified_diff(stored["content"], filename)
+        return parse_zip_file(stored_path)
+    content = Path(stored_path).read_bytes()
+    return parse_unified_diff(content, filename)
 
 
-async def upload_analysis_artifacts(
+async def create_pending_upload_run(
     type: str | None,
     repository: str | None,
     branch: str | None,
@@ -160,30 +162,56 @@ async def upload_analysis_artifacts(
     run_id = int(run["id"])
     uploaded_files = files or []
 
-    try:
-        await _set_progress(run, PARSING, 25, "업로드 파일 저장 및 파싱 중")
-        parsed_files: list[dict[str, Any]] = []
-        for file in uploaded_files:
-            stored = await save_upload_file(file, run_id)
-            uploaded_file_repository.create_uploaded_file(
-                run_id,
-                stored["original_filename"],
-                stored["stored_path"],
-                stored["file_type"],
-                stored["file_size"],
-                stored["checksum"],
-            )
-            parsed_files.extend(_parse_uploaded_artifact(stored))
+    for file in uploaded_files:
+        stored = await save_upload_file(file, run_id)
+        uploaded_file_repository.create_uploaded_file(
+            run_id,
+            stored["original_filename"],
+            stored["stored_path"],
+            stored["file_type"],
+            stored["file_size"],
+            stored["checksum"],
+        )
 
+    analysis_log_repository.create_log(run_id, f"{len(uploaded_files)} artifact file(s) uploaded.")
+    return {"analysisRun": _run_response(run)}
+
+
+async def upload_analysis_artifacts(
+    type: str | None,
+    repository: str | None,
+    branch: str | None,
+    range: str | None,
+    project_name: str | None,
+    options: str | None,
+    files: list[UploadFile] | None,
+    user: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    response = await create_pending_upload_run(type, repository, branch, range, project_name, options, files, user)
+    run_id = int(response["analysisRun"]["id"])
+    await run_analysis_pipeline_background(run_id, int(user["id"]))
+    return {"analysisRun": _run_response(_get_run(str(run_id), int(user["id"])))}
+
+
+async def run_analysis_pipeline_background(run_id: int, user_id: int) -> None:
+    run: dict[str, Any] = {"id": run_id, "user_id": user_id, "progress": 0}
+    try:
+        run = _get_run(str(run_id), user_id)
+        uploaded_files = uploaded_file_repository.list_by_run(run_id)
+
+        await _set_progress(run, PARSING, 20, "업로드 파일 파싱 중")
+        parsed_files: list[dict[str, Any]] = []
+        for stored in uploaded_files:
+            parsed_files.extend(_parse_uploaded_artifact(stored))
         if parsed_files:
             changed_file_repository.insert_many(run_id, parsed_files)
-        analysis_log_repository.create_log(run_id, f"{len(uploaded_files)} artifact file(s) uploaded.")
 
-        await _set_progress(run, ANALYZING, 65, "변경 파일 위험 요소 분석 중")
+        await _set_progress(run, ANALYZING, 50, "변경 파일 위험 요소 분석 중")
         risks = detect_risks(parsed_files)
         if risks:
             risk_finding_repository.insert_many(run_id, risks)
 
+        await _set_progress(run, AI_GENERATING, 80, "AI 요약 및 커밋 메시지 생성 중")
         summary = generate_summary(parsed_files, risks)
         ai_output_repository.create_output(run_id, "change_summary", summary)
         for message in generate_commit_messages(parsed_files, risks):
@@ -197,11 +225,33 @@ async def upload_analysis_artifacts(
                 ),
             )
 
-        await _set_progress(run, COMPLETED, 100, "분석 완료")
-        return {"analysisRun": _run_response(_get_run(str(run_id), int(user["id"])))}
-    except Exception:
-        await _set_progress(run, FAILED, 100, "분석 실패")
-        raise
+        analysis_run_repository.mark_completed(run_id, user_id)
+        analysis_log_repository.create_log(run_id, "분석 완료")
+        run["status"] = COMPLETED
+        run["progress"] = 100
+        await broadcast_analysis_progress(
+            run_id,
+            {
+                "type": "analysis.progress",
+                "runId": run_id,
+                "status": COMPLETED,
+                "percent": 100,
+                "currentStep": "분석 완료",
+            },
+        )
+    except Exception as error:
+        analysis_run_repository.mark_failed(run_id, user_id, str(error))
+        analysis_log_repository.create_log(run_id, f"분석 실패: {error}")
+        await broadcast_analysis_progress(
+            run_id,
+            {
+                "type": "analysis.progress",
+                "runId": run_id,
+                "status": FAILED,
+                "percent": int(run.get("progress") or 0),
+                "currentStep": "분석 실패",
+            },
+        )
 
 
 def _counter_rows(run_id: int) -> dict[str, int]:
@@ -334,5 +384,10 @@ def get_commit_messages(run_id: str, user: dict[str, Any]) -> dict[str, dict[str
     stats: dict[str, int] = {}
     for item in messages:
         stats[item["type"]] = stats.get(item["type"], 0) + 1
-    return {"commitMessages": {"messages": messages, "stats": [{"name": name, "value": value * 16} for name, value in stats.items()]}}
+    return {
+        "commitMessages": {
+            "messages": messages,
+            "stats": [{"name": name, "value": value * 16} for name, value in stats.items()],
+        }
+    }
 

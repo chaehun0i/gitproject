@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from utils.db import save
+from typing import Any
+
+from utils.db import find_all, save
 
 
 def create_uploaded_file(
@@ -20,3 +22,14 @@ def create_uploaded_file(
         (run_id, original_filename, stored_path, file_type, file_size, checksum),
     )
 
+
+def list_by_run(run_id: int) -> list[dict[str, Any]]:
+    return find_all(
+        """
+        SELECT original_filename, stored_path, file_type, file_size, checksum
+        FROM uploaded_files
+        WHERE analysis_run_id = %s
+        ORDER BY id ASC
+        """,
+        (run_id,),
+    )

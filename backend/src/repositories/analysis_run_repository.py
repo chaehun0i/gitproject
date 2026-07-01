@@ -78,8 +78,37 @@ def update_progress(run_id: int, user_id: int, status: str, progress: int) -> No
     save(
         """
         UPDATE analysis_runs
-        SET status = %s, progress = %s
+        SET status = %s,
+            progress = %s,
+            updated_at = NOW()
         WHERE id = %s AND user_id = %s
         """,
         (status, progress, run_id, user_id),
+    )
+
+
+def mark_completed(run_id: int, user_id: int) -> None:
+    save(
+        """
+        UPDATE analysis_runs
+        SET status = 'COMPLETED',
+            progress = 100,
+            completed_at = NOW(),
+            updated_at = NOW()
+        WHERE id = %s AND user_id = %s
+        """,
+        (run_id, user_id),
+    )
+
+
+def mark_failed(run_id: int, user_id: int, error_message: str) -> None:
+    save(
+        """
+        UPDATE analysis_runs
+        SET status = 'FAILED',
+            error_message = %s,
+            updated_at = NOW()
+        WHERE id = %s AND user_id = %s
+        """,
+        (error_message, run_id, user_id),
     )
