@@ -1,20 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ActivityLineChart from "@components/charts/ActivityLineChart";
 import ChangeTypeDonutChart from "@components/charts/ChangeTypeDonutChart";
 import { RepositoryEmptyVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
-import "@styles/pages/appPages.css";
+import { getAnalysisHistory } from "../api";
+import { useMocks } from "@utils/mockConfig";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/historyPage.css";
 
 const historyItems = [
   { project: "ai-commit-analyzer", branch: "feature/FE_all", source: "Git 산출물", status: "분석 완료", commits: "128", files: "42", runtime: "3분 12초", createdAt: "2026.06.30" },
   { project: "backend-server", branch: "develop", source: "GitHub", status: "분석 완료", commits: "86", files: "31", runtime: "2분 44초", createdAt: "2026.06.29" },
   { project: "frontend-app", branch: "main", source: "GitHub", status: "분석 중", commits: "104", files: "28", runtime: "진행 중", createdAt: "2026.06.28" },
   { project: "docs", branch: "main", source: "Git 산출물", status: "분석 대기", commits: "-", files: "-", runtime: "-", createdAt: "2026.06.27" },
-];
-
-const sourceTypes = [
-  { name: "Git 산출물", value: 50 },
-  { name: "GitHub 연동", value: 50 },
 ];
 
 const extraHistoryItems = [
@@ -27,18 +25,57 @@ const HistoryPage = ({ currentPage, onNavigate }) => {
   const [keyword, setKeyword] = useState("");
   const [status, setStatus] = useState("전체 상태");
   const [page, setPage] = useState(1);
+  const [items, setItems] = useState(useMocks ? [...historyItems, ...extraHistoryItems] : []);
 
   const filteredHistory = useMemo(() => {
-    return [...historyItems, ...extraHistoryItems].filter((item) => {
+    return items.filter((item) => {
       const matchesKeyword = `${item.project} ${item.branch}`.toLowerCase().includes(keyword.toLowerCase());
       const matchesStatus = status === "전체 상태" || item.status === status;
       return matchesKeyword && matchesStatus;
     });
-  }, [keyword, status]);
+  }, [items, keyword, status]);
 
   const pageSize = 5;
   const totalPages = Math.max(1, Math.ceil(filteredHistory.length / pageSize));
   const visibleHistory = filteredHistory.slice((page - 1) * pageSize, page * pageSize);
+  const sourceTypes = useMemo(() => {
+    const counts = items.reduce((acc, item) => {
+      acc[item.source] = (acc[item.source] ?? 0) + 1;
+      return acc;
+    }, {});
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [items]);
+  const activityValues = useMemo(() => {
+    if (useMocks) return [24, 44, 32, 68, 48, 76, 58, 82];
+    return items.map((item) => Number(item.commits) || 0);
+  }, [items]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadHistory = async () => {
+      try {
+        const data = await getAnalysisHistory();
+        if (mounted) {
+          setItems(data);
+        }
+      } catch {
+        if (mounted) {
+          setItems([]);
+        }
+      }
+    };
+
+    loadHistory();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [keyword, status]);
 
   return (
     <PageShell
@@ -51,7 +88,7 @@ const HistoryPage = ({ currentPage, onNavigate }) => {
         <article className="page-card history-summary">
           <h2>최근 30일 분석 흐름</h2>
           <p className="chart-description">최근 분석 추이를 보여줍니다. 분석량이 늘어난 구간을 확인할 수 있습니다.</p>
-          <ActivityLineChart values={[24, 44, 32, 68, 48, 76, 58, 82]} />
+          <ActivityLineChart values={activityValues} />
         </article>
         <article className="page-card history-summary">
           <h2>분석 방식 비율</h2>

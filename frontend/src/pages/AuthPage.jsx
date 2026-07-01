@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { login as loginAction } from "@stores/slices/authSlice";
 import commitlensLogo from "@assets/images/commitlens-logo.png";
 import { loginUser } from "../api";
+import { useMocks } from "@utils/mockConfig";
 import "@styles/pages/auth.css";
 
 const AuthPage = ({ onNavigate }) => {
@@ -21,13 +22,7 @@ const AuthPage = ({ onNavigate }) => {
       notify.success("로그인되었습니다.");
       onNavigate("home");
     } catch {
-      dispatch(loginAction({
-        id: "demo-user",
-        name: "이채훈",
-        email: form.get("email") || "chaehoon@example.com",
-      }));
-      notify.info("로그인되었습니다.");
-      onNavigate("home");
+      notify.error("로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.");
     }
   };
 
@@ -74,8 +69,8 @@ const AuthPage = ({ onNavigate }) => {
         <form className="login-card" onSubmit={login}>
           <h2>로그인</h2>
           <p>분석 워크스페이스로 이동합니다.</p>
-          <label>이메일<input name="email" placeholder="이메일 주소" type="email" defaultValue="chaehoon@example.com" /></label>
-          <label>비밀번호<input name="password" placeholder="비밀번호" type="password" defaultValue="demo1234" /></label>
+          <label>이메일<input name="email" placeholder="이메일 주소" type="email" defaultValue={useMocks ? "chaehoon@example.com" : ""} /></label>
+          <label>비밀번호<input name="password" placeholder="비밀번호" type="password" defaultValue={useMocks ? "demo1234" : ""} /></label>
           <div className="auth-options">
             <label><input defaultChecked type="checkbox" /> 로그인 상태 유지</label>
             <a href="#forgot">비밀번호 찾기</a>

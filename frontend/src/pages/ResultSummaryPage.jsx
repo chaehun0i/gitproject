@@ -1,7 +1,10 @@
 import ActivityLineChart from "@components/charts/ActivityLineChart";
 import ChangeTypeDonutChart from "@components/charts/ChangeTypeDonutChart";
 import { InsightVisual } from "@components/common/ProductVisuals";
+import { useEffect, useState } from "react";
 import PageShell from "@pages/PageShell";
+import { getAnalysisSummary } from "../api";
+import { useMocks } from "@utils/mockConfig";
 import "@styles/pages/pageCommon.css";
 import "@styles/pages/resultSummaryPage.css";
 
@@ -28,6 +31,43 @@ const reviewPoints = [
 ];
 
 const ResultSummaryPage = ({ currentPage, onNavigate }) => {
+  const [summary, setSummary] = useState({
+    projectName: useMocks ? "ai-commit-analyzer" : "",
+    metrics: useMocks ? summaryMetrics : [],
+    changeTypes: useMocks ? summaryChangeTypes : [],
+    activityValues: useMocks ? [32, 58, 44, 71, 49, 82, 65, 92, 56, 74] : [],
+    reviewPoints: useMocks ? reviewPoints : [],
+  });
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadSummary = async () => {
+      try {
+        const data = await getAnalysisSummary();
+        if (mounted) {
+          setSummary({
+            metrics: data.metrics ?? [],
+            projectName: data.projectName ?? "",
+            changeTypes: data.changeTypes ?? [],
+            activityValues: data.activityValues ?? [],
+            reviewPoints: data.reviewPoints ?? [],
+          });
+        }
+      } catch {
+        if (mounted) {
+          setSummary({ metrics: [], changeTypes: [], activityValues: [], reviewPoints: [] });
+        }
+      }
+    };
+
+    loadSummary();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <PageShell
       currentPage={currentPage}
@@ -38,7 +78,7 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
       <section className="result-action-bar page-card">
         <div>
           <span className="recommend-badge">분석 완료</span>
-          <h2>ai-commit-analyzer 분석이 완료되었습니다</h2>
+          <h2>{summary.projectName ? `${summary.projectName} 분석이 완료되었습니다` : "분석 결과가 준비되었습니다"}</h2>
           <p>업로드한 변경 기록과 선택한 분석 옵션을 바탕으로 요약과 추천 메시지가 준비되었습니다.</p>
         </div>
         <div className="result-actions">
@@ -48,7 +88,7 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
       </section>
 
       <section className="result-metrics">
-        {summaryMetrics.map(([label, value, hint]) => (
+        {summary.metrics.map(([label, value, hint]) => (
           <article className="metric-card" key={label}>
             <span>{label}</span>
             <b>{value}</b>
@@ -73,19 +113,19 @@ const ResultSummaryPage = ({ currentPage, onNavigate }) => {
         <article className="page-card chart-card">
           <h2>변경 유형 분포</h2>
           <p className="chart-description">이번 분석에서 기능 추가, 수정, 리팩토링 비중을 비교할 수 있습니다.</p>
-          <ChangeTypeDonutChart data={summaryChangeTypes} />
+          <ChangeTypeDonutChart data={summary.changeTypes} />
         </article>
         <article className="page-card chart-card wide">
           <h2>이번 분석에서 확인된 항목</h2>
           <p className="chart-description">분석 과정에서 확인된 주요 항목의 흐름입니다. 검토할 변경이 많아진 구간을 확인하세요.</p>
-          <ActivityLineChart values={[32, 58, 44, 71, 49, 82, 65, 92, 56, 74]} />
+          <ActivityLineChart values={summary.activityValues} />
         </article>
         <article className="page-card risk-card result-review-card">
           <div className="panel-title">
             <h2>주요 리뷰 포인트</h2>
             <InsightVisual />
           </div>
-          {reviewPoints.map((item, index) => (
+          {summary.reviewPoints.map((item, index) => (
             <div className="risk-row" key={item}>
               <b>{index + 1}</b>
               <span>{item}</span>

@@ -31,6 +31,8 @@ class Settings(BaseSettings):
 
     auth_cookie_name: str
     jwe_secret: str
+    access_token_ttl_seconds: int = 900
+    refresh_token_ttl_seconds: int = 1209600
     session_ttl_seconds: int = 86400
     secure_cookie: bool = False
 

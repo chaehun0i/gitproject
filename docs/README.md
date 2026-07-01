@@ -10,7 +10,7 @@ CommitLens 프로젝트 문서는 구조, 프론트엔드, 백엔드, DB, 작업
 ## 프론트엔드
 
 - [프론트엔드 문서](./frontend/README.md)
-- [정적 프론트엔드 메모](./frontend/static-frontend.md)
+- [프론트엔드 실행 방침](./frontend/static-frontend.md)
 
 ## 백엔드
 

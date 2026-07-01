@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AnalysisStartDialog from "@components/analysis/AnalysisStartDialog";
 import PageShell from "@pages/PageShell";
+import { getProjects } from "../api";
+import { useMocks } from "@utils/mockConfig";
 import "@styles/pages/pageCommon.css";
 import "@styles/pages/newAnalysisPage.css";
 
@@ -20,6 +22,9 @@ const commandGuide = [
 const NewAnalysisPage = ({ currentPage, onNavigate }) => {
   const [sourceType, setSourceType] = useState("upload");
   const [range, setRange] = useState("최근 30일");
+  const [projectName, setProjectName] = useState(useMocks ? "ai-commit-analyzer" : "");
+  const [branch, setBranch] = useState(useMocks ? "feature/FE_all" : "");
+  const [projectOptions, setProjectOptions] = useState([]);
   const [options, setOptions] = useState(["summary", "risk", "message"]);
 
   const selectedOptionText = useMemo(() => {
@@ -34,6 +39,33 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
       current.includes(key) ? current.filter((item) => item !== key) : [...current, key]
     ));
   };
+
+  useEffect(() => {
+    if (useMocks) return undefined;
+
+    let mounted = true;
+
+    const loadProjects = async () => {
+      try {
+        const projects = await getProjects();
+        if (!mounted) return;
+
+        setProjectOptions(projects);
+        setProjectName((current) => current || projects[0]?.name || "");
+        setBranch((current) => current || projects[0]?.branch || "");
+      } catch {
+        if (mounted) {
+          setProjectOptions([]);
+        }
+      }
+    };
+
+    loadProjects();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <PageShell
@@ -69,12 +101,23 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
               <div className="form-grid-2">
                 <label>
                   프로젝트
-                  <input placeholder="예: ai-commit-analyzer" defaultValue="ai-commit-analyzer" />
+                  {useMocks ? (
+                    <input placeholder="예: ai-commit-analyzer" value={projectName} onChange={(event) => setProjectName(event.target.value)} />
+                  ) : (
+                    <select value={projectName} onChange={(event) => {
+                      const selected = projectOptions.find((project) => project.name === event.target.value);
+                      setProjectName(event.target.value);
+                      setBranch(selected?.branch ?? "");
+                    }}>
+                      {projectOptions.length === 0 ? <option value="">연결된 프로젝트 없음</option> : null}
+                      {projectOptions.map((project) => <option key={project.id} value={project.name}>{project.name}</option>)}
+                    </select>
+                  )}
                 </label>
                 <label>
                   브랜치
-                  <select defaultValue="feature/FE_all">
-                    <option>feature/FE_all</option>
+                  <select value={branch} onChange={(event) => setBranch(event.target.value)}>
+                    {branch ? <option>{branch}</option> : <option value="">브랜치 없음</option>}
                     <option>main</option>
                     <option>develop</option>
                   </select>

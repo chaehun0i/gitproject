@@ -24,6 +24,8 @@ services:
       PG_DB_PORT: ${PG_DB_PORT:-5432}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       JWE_SECRET: ${JWE_SECRET:-dev-only-change-me-commitlens-jwe-secret}
+      ACCESS_TOKEN_TTL_SECONDS: ${ACCESS_TOKEN_TTL_SECONDS:-900}
+      REFRESH_TOKEN_TTL_SECONDS: ${REFRESH_TOKEN_TTL_SECONDS:-1209600}
     volumes:
       - ./backend:/workspace
     working_dir: /workspace

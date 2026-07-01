@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { PipelineVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
+import { getAnalysisProgress } from "../api";
+import { useMocks } from "@utils/mockConfig";
 import "@styles/pages/pageCommon.css";
 import "@styles/pages/analysisProgressPage.css";
 
@@ -21,14 +23,42 @@ const logs = [
 ];
 
 const AnalysisProgressPage = ({ currentPage, onNavigate }) => {
-  const [progress, setProgress] = useState(65);
+  const [progress, setProgress] = useState(useMocks ? 65 : 0);
+  const [runtimeLogs, setRuntimeLogs] = useState(useMocks ? logs : []);
+  const [counters, setCounters] = useState(useMocks ? { commits: 128, files: 42, risks: 8, messages: 3 } : { commits: 0, files: 0, risks: 0, messages: 0 });
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setProgress((value) => (value >= 72 ? 65 : value + 1));
-    }, 900);
+    let mounted = true;
 
-    return () => window.clearInterval(timer);
+    const loadProgress = async () => {
+      try {
+        const data = await getAnalysisProgress();
+        if (mounted) {
+          setProgress(data.progress ?? (useMocks ? 65 : 0));
+          setRuntimeLogs(data.logs ?? []);
+          setCounters(data.counters ?? { commits: 0, files: 0, risks: 0, messages: 0 });
+        }
+      } catch {
+        if (mounted) {
+          setRuntimeLogs(["분석 진행 상태를 불러오지 못했습니다."]);
+        }
+      }
+    };
+
+    loadProgress();
+
+    const timer = window.setInterval(() => {
+      if (useMocks) {
+        setProgress((value) => (value >= 72 ? 65 : value + 1));
+        return;
+      }
+      loadProgress();
+    }, useMocks ? 900 : 3000);
+
+    return () => {
+      mounted = false;
+      window.clearInterval(timer);
+    };
   }, []);
 
   const activeIndex = useMemo(() => {
@@ -90,16 +120,16 @@ const AnalysisProgressPage = ({ currentPage, onNavigate }) => {
           <article className="page-card live-console-card">
             <h2>실시간 로그</h2>
             <div className="live-console">
-              {logs.map((line) => <code key={line}>{line}</code>)}
+              {runtimeLogs.map((line) => <code key={line}>{line}</code>)}
             </div>
           </article>
           <article className="page-card">
             <h2>현재 처리 데이터</h2>
             <div className="summary-points">
-              <span><b>128</b> 커밋 수집</span>
-              <span><b>42</b> 변경 파일 분석</span>
-              <span><b>8</b> 위험 포인트 후보</span>
-              <span><b>3</b> 커밋 메시지 후보</span>
+              <span><b>{counters.commits}</b> 커밋 수집</span>
+              <span><b>{counters.files}</b> 변경 파일 분석</span>
+              <span><b>{counters.risks}</b> 위험 포인트 후보</span>
+              <span><b>{counters.messages}</b> 커밋 메시지 후보</span>
             </div>
             <button type="button" onClick={() => onNavigate("result")}>완료 화면 보기</button>
           </article>

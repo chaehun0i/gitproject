@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageShell from "@pages/PageShell";
+import { getAnalysisDetail } from "../api";
+import { useMocks } from "@utils/mockConfig";
 import "@styles/pages/pageCommon.css";
 import "@styles/pages/detailAnalysisPage.css";
 
@@ -14,7 +16,7 @@ const detailFiles = [
   ...files,
   ["src/pages/HomePage.jsx", "React", "\uC218\uC815", "+38", "-14", "\uB0AE\uC74C"],
   ["src/components/analysis/AnalysisStartDialog.jsx", "React", "\uC218\uC815", "+72", "-19", "\uC911\uAC04"],
-  ["src/styles/pages/appPages.css", "CSS", "\uC218\uC815", "+116", "-22", "\uB0AE\uC74C"],
+  ["src/styles/pages/detailAnalysisPage.css", "CSS", "\uC218\uC815", "+116", "-22", "\uB0AE\uC74C"],
   ["src/stores/slices/authSlice.js", "JavaScript", "\uC218\uC815", "+31", "-9", "\uC911\uAC04"],
 ];
 
@@ -60,15 +62,55 @@ const tabs = {
 };
 
 const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
+  const emptyFile = ["", "", "", "", "", ""];
   const [tab, setTab] = useState("code");
-  const [selectedFile, setSelectedFile] = useState(detailFiles[0]);
+  const [selectedFile, setSelectedFile] = useState(useMocks ? detailFiles[0] : emptyFile);
+  const [analysisFiles, setAnalysisFiles] = useState(useMocks ? detailFiles : []);
+  const [runtimeDiffLines, setRuntimeDiffLines] = useState(useMocks ? diffLines : []);
+  const [runtimeAnalysisPoints, setRuntimeAnalysisPoints] = useState(useMocks ? analysisPoints : []);
+  const [runtimeCommits, setRuntimeCommits] = useState(useMocks ? commits : []);
+  const [runtimeIssues, setRuntimeIssues] = useState(useMocks ? issues : []);
   const [fileQuery, setFileQuery] = useState("");
   const [filePage, setFilePage] = useState(1);
   const [fileName, language, changeType, added, removed, risk] = selectedFile;
   const pageSize = 5;
-  const filteredFiles = detailFiles.filter((file) => file[0].toLowerCase().includes(fileQuery.toLowerCase()));
+  const filteredFiles = analysisFiles.filter((file) => file[0].toLowerCase().includes(fileQuery.toLowerCase()));
   const totalFilePages = Math.max(1, Math.ceil(filteredFiles.length / pageSize));
   const pagedFiles = filteredFiles.slice((filePage - 1) * pageSize, filePage * pageSize);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadDetail = async () => {
+      try {
+        const data = await getAnalysisDetail();
+        const nextFiles = data.files ?? [];
+        if (mounted) {
+          setAnalysisFiles(nextFiles);
+          setRuntimeDiffLines(data.diffLines ?? []);
+          setRuntimeAnalysisPoints(data.analysisPoints ?? []);
+          setRuntimeCommits(data.commits ?? []);
+          setRuntimeIssues(data.issues ?? []);
+          setSelectedFile(nextFiles[0] ?? emptyFile);
+        }
+      } catch {
+        if (mounted) {
+          setAnalysisFiles([]);
+          setRuntimeDiffLines([]);
+          setRuntimeAnalysisPoints([]);
+          setRuntimeCommits([]);
+          setRuntimeIssues([]);
+          setSelectedFile(emptyFile);
+        }
+      }
+    };
+
+    loadDetail();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <PageShell
@@ -148,12 +190,12 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
                 <b>{fileName}</b>
               </div>
               <div className="diff-body">
-                {diffLines.map(([type, line], index) => (
+                {runtimeDiffLines.length > 0 ? runtimeDiffLines.map(([type, line], index) => (
                   <div className={`diff-line ${type}`} key={`${type}-${index}`}>
                     <i>{index + 1}</i>
                     <code>{line || " "}</code>
                   </div>
-                ))}
+                )) : <div className="diff-line ctx"><i>-</i><code>표시할 코드 변경이 없습니다.</code></div>}
               </div>
             </div>
           ) : null}
@@ -161,12 +203,9 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
           {tab === "ai" ? (
             <div className="tab-panel refined-tab-panel">
               <h2>AI 분석 결과</h2>
-              <p>
-                로그인 이후 세션 복구 책임이 프론트와 백엔드 refresh API로 분리되었습니다.
-                식별 정보와 로그인 유지 상태를 분리해 관리하는 구조가 적절합니다.
-              </p>
+              <p>{runtimeAnalysisPoints.length > 0 ? "분석 결과에서 확인된 주요 변경 사항입니다." : "표시할 AI 분석 결과가 없습니다."}</p>
               <div className="summary-points">
-                {analysisPoints.map(([title, text]) => (
+                {runtimeAnalysisPoints.map(([title, text]) => (
                   <span key={title}><b>{title}</b>{text}</span>
                 ))}
               </div>
@@ -176,14 +215,14 @@ const DetailAnalysisPage = ({ currentPage, onNavigate }) => {
           {tab === "commits" ? (
             <div className="tab-panel refined-tab-panel">
               <h2>관련 커밋</h2>
-              {commits.map((commit) => <p className="commit-line" key={commit}>{commit}</p>)}
+              {runtimeCommits.map((commit) => <p className="commit-line" key={commit}>{commit}</p>)}
             </div>
           ) : null}
 
           {tab === "issues" ? (
             <div className="tab-panel refined-tab-panel">
               <h2>연결 이슈</h2>
-              {issues.map(([key, title]) => (
+              {runtimeIssues.map(([key, title]) => (
                 <p className="commit-line" key={key}><b>{key}</b> {title}</p>
               ))}
             </div>

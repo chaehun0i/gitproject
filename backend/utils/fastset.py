@@ -1,31 +1,26 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
-
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from core.settings import settings
-from routes import analysis_runs, auth, health, projects, services
-
-
-def route_set() -> Iterable[APIRouter]:
-    return (
-        health.router,
-        auth.router,
-        services.router,
-        projects.router,
-        analysis_runs.router,
-    )
+from routes import health, services
+from src.apis.analysis_runs import analysis_runs_router
+from src.apis.auth import auth_router
+from src.apis.projects import projects_router
+from src.apis.settings import settings_router
+from src.apis.workspace import workspace_router
+from utils.schema import ensure_schema
 
 
 def register_routers(app: FastAPI) -> None:
-    api_router = APIRouter(prefix="/api")
-
-    for router in route_set():
-        api_router.include_router(router)
-
-    app.include_router(api_router)
+    app.include_router(health.router)
+    app.include_router(services.router)
+    app.include_router(auth_router, prefix="/auth")
+    app.include_router(projects_router, prefix="/projects")
+    app.include_router(analysis_runs_router, prefix="/analysis/runs")
+    app.include_router(workspace_router, prefix="/workspace")
+    app.include_router(settings_router, prefix="/settings")
 
 
 def run() -> FastAPI:
@@ -38,4 +33,9 @@ def run() -> FastAPI:
         allow_headers=["*"],
     )
     register_routers(app)
+
+    @app.on_event("startup")
+    def ensure_database_schema() -> None:
+        ensure_schema()
+
     return app

@@ -41,6 +41,18 @@ frontend/
       components/
       layout/
       pages/
+        pageCommon.css
+        landing.css
+        auth.css
+        homePage.css
+        projectsPage.css
+        newAnalysisPage.css
+        analysisProgressPage.css
+        resultSummaryPage.css
+        detailAnalysisPage.css
+        commitMessagePage.css
+        historyPage.css
+        myPage.css
     utils/
 
 db/
@@ -59,9 +71,12 @@ docs/
 
 - `global.css`는 reset과 CSS 변수만 둡니다.
 - 페이지 전용 스타일은 `frontend/src/styles/pages`에서 관리합니다.
+- 여러 페이지가 같이 쓰는 카드, 배지, 페이지네이션, 페이지 헤더 스타일은 `pageCommon.css`에서 관리합니다.
 - 레이아웃 전용 스타일은 `frontend/src/styles/layout`에서 관리합니다.
 - 컴포넌트 전용 스타일은 `frontend/src/styles/components`에서 관리합니다.
 - 더미 데이터는 `VITE_USE_MOCKS=true|false`로 제어합니다.
+- 로그인 후 화면은 `AppLayout`에서 고정 헤더와 접힘 가능한 사이드바를 공통으로 제공합니다.
+- 새 분석 시작, 분석 진행, 프로필 수정처럼 사용자 흐름상 팝업이 자연스러운 기능은 모달 중심으로 구성합니다.
 
 ## 백엔드 기준
 

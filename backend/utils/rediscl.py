@@ -36,3 +36,33 @@ async def delete_session(uuid: str) -> None:
         await redis.delete(f"session:{uuid}")
     finally:
         await redis.aclose()
+
+
+def refresh_session_key(jti: str) -> str:
+    return f"auth:refresh:{jti}"
+
+
+async def set_refresh_session(jti: str, session: dict[str, Any], ttl_seconds: int) -> None:
+    redis = redis_client()
+    try:
+        await redis.setex(refresh_session_key(jti), ttl_seconds, json.dumps(session))
+    finally:
+        await redis.aclose()
+
+
+async def get_refresh_session(jti: str) -> dict[str, Any] | None:
+    redis = redis_client()
+    try:
+        value = await redis.get(refresh_session_key(jti))
+    finally:
+        await redis.aclose()
+
+    return json.loads(value) if value else None
+
+
+async def delete_refresh_session(jti: str) -> None:
+    redis = redis_client()
+    try:
+        await redis.delete(refresh_session_key(jti))
+    finally:
+        await redis.aclose()

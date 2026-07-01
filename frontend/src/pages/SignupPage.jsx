@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { login as loginAction } from "@stores/slices/authSlice";
 import commitlensLogo from "@assets/images/commitlens-logo.png";
 import { signupUser } from "../api";
+import { useMocks } from "@utils/mockConfig";
 import "@styles/pages/auth.css";
 
 const SignupPage = ({ onNavigate }) => {
@@ -22,13 +23,7 @@ const SignupPage = ({ onNavigate }) => {
       notify.success("회원가입이 완료되었습니다.");
       onNavigate("home");
     } catch {
-      dispatch(loginAction({
-        id: "demo-user",
-        name: form.get("name") || "이채훈",
-        email: form.get("email") || "chaehoon@example.com",
-      }));
-      notify.info("계정이 준비되었습니다.");
-      onNavigate("home");
+      notify.error("회원가입에 실패했습니다. 입력 내용을 확인하세요.");
     }
   };
 
@@ -74,9 +69,9 @@ const SignupPage = ({ onNavigate }) => {
         <form className="login-card" onSubmit={signup}>
           <h2>회원가입</h2>
           <p>계정을 만들고 첫 분석을 준비하세요.</p>
-          <label>이름<input name="name" placeholder="이름" defaultValue="이채훈" /></label>
-          <label>이메일<input name="email" placeholder="이메일 주소" type="email" defaultValue="chaehoon@example.com" /></label>
-          <label>비밀번호<input name="password" placeholder="비밀번호" type="password" defaultValue="demo1234" /></label>
+          <label>이름<input name="name" placeholder="이름" defaultValue={useMocks ? "이채훈" : ""} /></label>
+          <label>이메일<input name="email" placeholder="이메일 주소" type="email" defaultValue={useMocks ? "chaehoon@example.com" : ""} /></label>
+          <label>비밀번호<input name="password" placeholder="비밀번호" type="password" defaultValue={useMocks ? "demo1234" : ""} /></label>
           <label className="check-row"><input defaultChecked type="checkbox" /> 서비스 이용 약관과 분석 데이터 처리 방침에 동의합니다.</label>
           <button type="submit">회원가입</button>
           <button className="github-button" type="button" onClick={() => notify.info("GitHub 계정 연결은 추후 제공 예정입니다.")}>

@@ -31,6 +31,10 @@ def verify_password(password: str, password_hash: str) -> bool:
         return False
 
 
+def hash_token(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
 def create_session_id() -> str:
     return str(uuid.uuid4())
 

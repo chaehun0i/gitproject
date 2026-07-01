@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 
 from schemas.analysis_runs import AnalysisRunCreate, AnalysisRunSummary
 
-router = APIRouter(prefix="/analysis-runs", tags=["analysis"])
+router = APIRouter(prefix="/analysis/runs", tags=["analysis"])
 
 
 @router.post("", status_code=status.HTTP_202_ACCEPTED)

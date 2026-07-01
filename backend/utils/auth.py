@@ -19,14 +19,14 @@ def user_payload(user: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-async def authenticate_or_create_user(
+async def authenticate_user(
     email: str,
     password: str,
     name: str | None,
 ) -> dict[str, Any]:
     user = find_user_by_email(email)
     if user is None:
-        return create_user(email, password, name)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     if not verify_password(password, user["password_hash"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")

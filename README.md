@@ -1,14 +1,14 @@
-# AI 개발 이력 비서
+# CommitLens
 
-Git 변경 이력을 분석해서 프로젝트가 어떻게 개발됐는지 설명하는 AI 개발 비서 프로젝트입니다.
+Git 커밋 내역과 코드 변경 내용을 분석해 개발 인사이트와 커밋 메시지 추천을 제공하는 포트폴리오용 AI 개발 분석 서비스입니다.
 
-현재는 업로드를 위한 기본 세팅 단계입니다.
+현재 작업 기준은 DB 컨테이너만 Docker Desktop으로 실행하고, 백엔드와 프론트엔드는 로컬에서 실행합니다.
 
 ## 기본 구성
 
 ```text
 backend/    FastAPI 백엔드
-frontend/   Nginx 정적 프론트엔드
+frontend/   Vite + React 프론트엔드
 db/         PostgreSQL, MariaDB, Redis 실행 설정
 docs/       프로젝트 문서
 .github/    GitHub Actions
@@ -21,18 +21,22 @@ cd db
 docker compose up -d
 ```
 
-## 앱 실행
+## 프론트엔드 실행
 
 ```bash
-docker compose --profile frontend up -d
+cd frontend
+npm install
+npm run dev
 ```
 
-`frontend` profile을 실행하면 FastAPI 백엔드도 함께 포함됩니다.
+기본 개발 서버는 Vite 기준 `http://localhost:5173`입니다.
 
-Nginx는 정적 파일을 제공하고 `/api/` 요청을 백엔드로 전달합니다.
+## 백엔드 실행
+
+백엔드는 로컬 FastAPI 실행을 기준으로 합니다. 환경 변수와 실행 방식은 백엔드 문서를 기준으로 관리합니다.
 
 ```text
-browser -> frontend nginx -> backend:8000
+browser -> Vite frontend -> /api proxy -> FastAPI backend
 ```
 
 ## 선택 서비스
@@ -60,4 +64,13 @@ origin: https://github.com/chaehun0i/gitproject.git
 
 ```text
 docs/docker-images.md
+```
+
+## 프론트엔드 문서
+
+화면 구조, 라우팅, CSS 분리 기준은 다음 문서에서 관리합니다.
+
+```text
+docs/frontend/README.md
+docs/project-structure.md
 ```

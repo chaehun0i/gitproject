@@ -62,7 +62,11 @@ const App = () => {
     const restoreSession = async () => {
       try {
         const user = await refreshSession();
-        dispatch(login(user));
+        if (user) {
+          dispatch(login(user));
+        } else {
+          dispatch(setAuthReady());
+        }
       } catch {
         dispatch(setAuthReady());
       }
@@ -79,7 +83,9 @@ const App = () => {
     const refresh = async () => {
       try {
         const user = await refreshSession();
-        dispatch(login(user));
+        if (user) {
+          dispatch(login(user));
+        }
       } catch {
         dispatch(logout());
       }

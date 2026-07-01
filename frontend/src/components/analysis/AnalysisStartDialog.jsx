@@ -1,6 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createAnalysisRun, getProjects, uploadAnalysisArtifacts } from "../../api";
 import { notify } from "@utils/feedback";
+import { useMocks } from "@utils/mockConfig";
 import commitlensLogo from "@assets/images/commitlens-logo.png";
 import "@styles/components/dialog.css";
 
@@ -13,15 +15,60 @@ const analysisOptions = [
   ["refactor", "개선 포인트", "정리하면 좋은 코드 흐름을 찾아줍니다."],
 ];
 
+const demoRepositories = [
+  { id: "chaehoon/ai-commit-analyzer", owner: "chaehoon", repo: "ai-commit-analyzer", branch: "feature/FE_all" },
+  { id: "chaehoon/backend-server", owner: "chaehoon", repo: "backend-server", branch: "develop" },
+  { id: "chaehoon/frontend-app", owner: "chaehoon", repo: "frontend-app", branch: "main" },
+];
+
 const AnalysisStartDialog = ({ trigger, onStart }) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [analysisType, setAnalysisType] = useState("upload");
+  const [repositoryOptions, setRepositoryOptions] = useState(useMocks ? demoRepositories : []);
+  const [repository, setRepository] = useState(useMocks ? "chaehoon/ai-commit-analyzer" : "");
+  const [branch, setBranch] = useState(useMocks ? "feature/FE_all" : "");
+  const [range, setRange] = useState("최근 30일");
+  const [projectName, setProjectName] = useState(useMocks ? "ai-commit-analyzer" : "");
   const [options, setOptions] = useState(["summary", "risk", "message"]);
+  const fileInputRef = useRef(null);
 
   const selectedOptions = useMemo(() => {
     return analysisOptions.filter(([key]) => options.includes(key));
   }, [options]);
+
+  useEffect(() => {
+    if (!open || useMocks) return undefined;
+
+    let mounted = true;
+
+    const loadRepositories = async () => {
+      try {
+        const projects = await getProjects();
+        if (!mounted) return;
+
+        const nextOptions = projects.map((project) => ({
+          id: `${project.owner}/${project.repo}`,
+          owner: project.owner,
+          repo: project.repo,
+          branch: project.branch,
+        }));
+        setRepositoryOptions(nextOptions);
+        setRepository((current) => current || nextOptions[0]?.id || "");
+        setBranch((current) => current || nextOptions[0]?.branch || "");
+      } catch {
+        if (mounted) {
+          setRepositoryOptions([]);
+        }
+      }
+    };
+
+    loadRepositories();
+
+    return () => {
+      mounted = false;
+    };
+  }, [open]);
 
   const closeDialog = (nextOpen) => {
     setOpen(nextOpen);
@@ -36,10 +83,30 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
     ));
   };
 
-  const startAnalysis = () => {
-    notify.success("분석을 시작합니다.");
-    closeDialog(false);
-    onStart?.(analysisType);
+  const startAnalysis = async () => {
+    const loadingId = notify.loading("분석을 시작하고 있습니다.");
+
+    try {
+      const payload = {
+        type: analysisType,
+        repository,
+        branch,
+        range,
+        projectName,
+        options,
+      };
+      const analysisRun = analysisType === "upload"
+        ? await uploadAnalysisArtifacts({ ...payload, files: fileInputRef.current?.files })
+        : await createAnalysisRun(payload);
+
+      notify.dismiss(loadingId);
+      notify.success("분석을 시작합니다.");
+      closeDialog(false);
+      onStart?.(analysisRun);
+    } catch {
+      notify.dismiss(loadingId);
+      notify.error("분석 시작에 실패했습니다. 입력값과 API 연결 상태를 확인하세요.");
+    }
   };
 
   return (
@@ -94,23 +161,24 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
                 <>
                   <label>
                     저장소
-                    <select defaultValue="chaehoon/ai-commit-analyzer">
-                      <option>chaehoon/ai-commit-analyzer</option>
-                      <option>chaehoon/backend-server</option>
-                      <option>chaehoon/frontend-app</option>
+                    <select value={repository} onChange={(event) => setRepository(event.target.value)}>
+                      {repositoryOptions.length === 0 ? <option value="">연결된 저장소 없음</option> : null}
+                      {repositoryOptions.map((item) => (
+                        <option key={item.id} value={item.id}>{item.id}</option>
+                      ))}
                     </select>
                   </label>
                   <label>
                     브랜치
-                    <select defaultValue="feature/FE_all">
-                      <option>feature/FE_all</option>
+                    <select value={branch} onChange={(event) => setBranch(event.target.value)}>
+                      {branch ? <option>{branch}</option> : <option value="">브랜치 없음</option>}
                       <option>main</option>
                       <option>develop</option>
                     </select>
                   </label>
                   <label>
                     분석 범위
-                    <select defaultValue="최근 30일">
+                    <select value={range} onChange={(event) => setRange(event.target.value)}>
                       <option>최근 7일</option>
                       <option>최근 30일</option>
                       <option>최근 90일</option>
@@ -122,7 +190,7 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
                 <>
                   <label>
                     프로젝트 이름
-                    <input placeholder="예: sprint-12-auth-review" />
+                    <input value={projectName} onChange={(event) => setProjectName(event.target.value)} placeholder="예: sprint-12-auth-review" />
                   </label>
                   <div className="command-help compact">
                     <b>업로드 전 준비할 파일</b>
@@ -131,7 +199,7 @@ const AnalysisStartDialog = ({ trigger, onStart }) => {
                     <code>git diff --name-only main...HEAD &gt; changed-files.txt</code>
                   </div>
                   <label className="upload-box compact">
-                    <input multiple type="file" />
+                    <input multiple ref={fileInputRef} type="file" />
                     <strong>분석 파일 업로드</strong>
                     <small>patch, diff, txt, zip 파일을 선택할 수 있습니다.</small>
                   </label>

@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AnalysisStartDialog from "@components/analysis/AnalysisStartDialog";
 import { RepositoryEmptyVisual } from "@components/common/ProductVisuals";
+import { getProjects, removeProject as removeProjectApi } from "../api";
 import { confirmAction } from "@utils/feedback";
 import { mockOrEmpty } from "@utils/mockConfig";
 import "@styles/pages/pageCommon.css";
@@ -140,7 +141,30 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
   const [sort, setSort] = useState("최근 분석 순");
   const [viewMode, setViewMode] = useState("list");
   const [page, setPage] = useState(1);
-  const projects = mockOrEmpty(mockProjects);
+  const [projects, setProjects] = useState(() => mockOrEmpty(mockProjects));
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadProjects = async () => {
+      try {
+        const data = await getProjects();
+        if (mounted) {
+          setProjects(data);
+        }
+      } catch {
+        if (mounted) {
+          setProjects([]);
+        }
+      }
+    };
+
+    loadProjects();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const filteredProjects = useMemo(() => {
     const filtered = projects.filter((project) => {
@@ -160,13 +184,22 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
   const totalPages = Math.max(1, Math.ceil(filteredProjects.length / pageSize));
   const visibleProjects = filteredProjects.slice((page - 1) * pageSize, page * pageSize);
 
-  const removeProject = (name) => {
-    confirmAction({
+  useEffect(() => {
+    setPage(1);
+  }, [keyword, sort, status]);
+
+  const removeProject = async (project) => {
+    const result = await confirmAction({
       title: "프로젝트를 목록에서 제거할까요?",
       text: "분석 기록은 유지되며, 연결된 저장소만 목록에서 숨겨집니다.",
       confirmButtonText: "제거",
       cancelButtonText: "취소",
     });
+
+    if (!result.isConfirmed) return;
+
+    await removeProjectApi(project.id);
+    setProjects((items) => items.filter((item) => item.id !== project.id));
   };
 
   return (
@@ -249,7 +282,7 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
                     <button type="button" onClick={() => onNavigate(project.status === "분석 중" ? "progress" : "result")}>
                       {project.status === "분석 중" ? "진행 보기" : "결과 보기"}
                     </button>
-                    <button type="button" onClick={() => removeProject(project.name)}>제거</button>
+                    <button type="button" onClick={() => removeProject(project)}>제거</button>
                   </div>
                 </article>
               ))}

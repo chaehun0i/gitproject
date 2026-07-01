@@ -1,8 +1,11 @@
 import MessageTypeBarChart from "@components/charts/MessageTypeBarChart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageShell from "@pages/PageShell";
+import { getCommitMessages } from "../api";
 import { notify } from "@utils/feedback";
-import "@styles/pages/appPages.css";
+import { useMocks } from "@utils/mockConfig";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/commitMessagePage.css";
 
 const recommendedMessages = [
   {
@@ -57,9 +60,36 @@ const messageItems = [
 
 const CommitMessagePage = ({ currentPage, onNavigate }) => {
   const [page, setPage] = useState(1);
+  const [messages, setMessages] = useState(useMocks ? messageItems : []);
+  const [stats, setStats] = useState(useMocks ? messageStats : []);
   const pageSize = 5;
-  const totalPages = Math.max(1, Math.ceil(messageItems.length / pageSize));
-  const visibleMessages = messageItems.slice((page - 1) * pageSize, page * pageSize);
+  const totalPages = Math.max(1, Math.ceil(messages.length / pageSize));
+  const visibleMessages = messages.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadMessages = async () => {
+      try {
+        const data = await getCommitMessages();
+        if (mounted) {
+          setMessages(data.messages ?? []);
+          setStats(data.stats ?? []);
+        }
+      } catch {
+        if (mounted) {
+          setMessages([]);
+          setStats([]);
+        }
+      }
+    };
+
+    loadMessages();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const copyMessage = (message) => {
     navigator.clipboard?.writeText(message);
@@ -109,9 +139,9 @@ const CommitMessagePage = ({ currentPage, onNavigate }) => {
             추천 근거는 변경 요약과 파일별 분석 결과를 바탕으로 표시됩니다.
           </p>
           <p className="chart-description">추천 메시지 타입별 분포입니다. 이번 변경에 어떤 메시지 유형이 어울리는지 비교할 수 있습니다.</p>
-          <MessageTypeBarChart data={messageStats} />
+          <MessageTypeBarChart data={stats} />
           <div className="side-actions">
-            <button type="button" onClick={() => copyMessage(recommendedMessages[0].text)}>대표 메시지 복사</button>
+            <button disabled={!messages[0]} type="button" onClick={() => messages[0] && copyMessage(messages[0].text)}>대표 메시지 복사</button>
             <button type="button" onClick={() => onNavigate("history")}>분석 내역 보기</button>
           </div>
         </aside>

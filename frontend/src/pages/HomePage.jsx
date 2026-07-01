@@ -1,6 +1,9 @@
 import ActivityLineChart from "@components/charts/ActivityLineChart";
+import { useEffect, useState } from "react";
 import PageShell from "@pages/PageShell";
 import productVisual from "@assets/images/commitlens-product-visual.png";
+import { getWorkspace } from "../api";
+import { useMocks } from "@utils/mockConfig";
 import "@styles/pages/pageCommon.css";
 import "@styles/pages/homePage.css";
 
@@ -33,6 +36,41 @@ const quickStart = [
 ];
 
 const HomePage = ({ currentPage, onNavigate }) => {
+  const [workspace, setWorkspace] = useState({
+    kpis: useMocks ? kpis : [],
+    recentProjects: useMocks ? recentProjects : [],
+    insights: useMocks ? insights : [],
+    chartValues: useMocks ? [28, 42, 36, 58, 49, 72, 64, 88, 73, 95, 69, 82] : [],
+  });
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadWorkspace = async () => {
+      try {
+        const data = await getWorkspace();
+        if (mounted && data) {
+          setWorkspace({
+            kpis: data.kpis ?? [],
+            recentProjects: data.recentProjects ?? [],
+            insights: data.insights ?? [],
+            chartValues: data.chartValues ?? [],
+          });
+        }
+      } catch {
+        if (mounted) {
+          setWorkspace({ kpis: [], recentProjects: [], insights: [], chartValues: [] });
+        }
+      }
+    };
+
+    loadWorkspace();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <PageShell
       currentPage={currentPage}
@@ -65,7 +103,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
       </section>
 
       <section className="home-metrics workspace-metrics">
-        {kpis.map(([label, value, hint]) => (
+        {workspace.kpis.map(([label, value, hint]) => (
           <article className="metric-card" key={label}>
             <span>{label}</span>
             <b>{value}</b>
@@ -80,7 +118,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
             <h2>최근 분석 프로젝트</h2>
             <button type="button" onClick={() => onNavigate("projects")}>전체 보기</button>
           </div>
-          {recentProjects.map(([name, source, branch, status, time, progress]) => (
+          {workspace.recentProjects.map(([name, source, branch, status, time, progress]) => (
             <div className="home-project-row" key={name}>
               <span>{source === "저장소 연결" ? "Repo" : "Git"}</span>
               <div>
@@ -102,7 +140,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
             <span className="recommend-badge">30일</span>
           </div>
           <p className="chart-description">최근 커밋 활동 흐름입니다. 작업량이 늘어난 구간과 분석이 필요한 시점을 확인하세요.</p>
-          <ActivityLineChart values={[28, 42, 36, 58, 49, 72, 64, 88, 73, 95, 69, 82]} />
+          <ActivityLineChart values={workspace.chartValues} />
         </article>
       </section>
 
@@ -111,7 +149,7 @@ const HomePage = ({ currentPage, onNavigate }) => {
           <div>
             <h2>검토할 변경 요약</h2>
             <div className="summary-points">
-              {insights.map(([title, text]) => (
+              {workspace.insights.map(([title, text]) => (
                 <span key={title}><b>{title}</b>{text}</span>
               ))}
             </div>

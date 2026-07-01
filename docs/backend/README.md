@@ -13,13 +13,13 @@ CommitLens 백엔드는 FastAPI 기반입니다. 현재 개발 방식은 DB와 R
 
 ## 인증 흐름
 
-1. `/api/auth/login` 또는 `/api/auth/signup`
+1. `/auth/login` 또는 `/auth/signup`
 2. DB `users` 조회 또는 생성
 3. UUID session id 생성
 4. JWE token 발급
 5. Redis에 `session:{uuid}` 저장
 6. HttpOnly cookie에 JWE token 저장
-7. `/api/auth/me`에서 JWE 복호화 후 Redis session 확인
+7. `/auth/me`에서 access token을 검증하고 Redis refresh session은 `/auth/refresh`에서 확인
 
 ## 로컬 실행
 

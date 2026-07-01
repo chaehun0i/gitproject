@@ -7,7 +7,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from core.settings import settings
 from utils.auth import (
-    authenticate_or_create_user,
+    authenticate_user,
     clear_login_cookie,
     get_current_user,
     issue_login_cookie,
@@ -46,7 +46,7 @@ def to_auth_response(user: dict | object) -> AuthResponse:
 
 @router.post("/login", response_model=AuthResponse)
 async def login(payload: AuthRequest, response: Response) -> AuthResponse:
-    user = await authenticate_or_create_user(payload.email, payload.password, payload.name)
+    user = await authenticate_user(payload.email, payload.password, payload.name)
     await issue_login_cookie(response, user)
     return to_auth_response(user)
 

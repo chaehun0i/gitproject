@@ -1,0 +1,1 @@
+"""CommitLens backend application package."""
