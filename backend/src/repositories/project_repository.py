@@ -4,31 +4,48 @@ from typing import Any
 
 from utils.db import add_key, find_all, find_one, save
 
-PROJECT_COLUMNS = (
-    "id, user_id, name, description, owner, repo, source, visibility, "
-    "branch, language, starred, created_at, updated_at"
-)
-
-
 def list_by_user(user_id: int, limit: int | None = None) -> list[dict[str, Any]]:
-    sql = f"SELECT {PROJECT_COLUMNS} FROM projects WHERE user_id = %s ORDER BY updated_at DESC, id DESC"
     if limit is not None:
-        sql += " LIMIT %s"
-        return find_all(sql, (user_id, limit))
-    return find_all(sql, (user_id,))
+        return find_all(
+            """
+            SELECT id, user_id, name, description, owner, repo, source, visibility,
+                   branch, language, starred, created_at, updated_at
+            FROM projects
+            WHERE user_id = %s
+            ORDER BY updated_at DESC, id DESC
+            LIMIT %s
+            """,
+            (user_id, limit),
+        )
+    return find_all(
+        """
+        SELECT id, user_id, name, description, owner, repo, source, visibility,
+               branch, language, starred, created_at, updated_at
+        FROM projects
+        WHERE user_id = %s
+        ORDER BY updated_at DESC, id DESC
+        """,
+        (user_id,),
+    )
 
 
 def get_by_id_and_user(project_id: int, user_id: int) -> dict[str, Any] | None:
     return find_one(
-        f"SELECT {PROJECT_COLUMNS} FROM projects WHERE id = %s AND user_id = %s",
+        """
+        SELECT id, user_id, name, description, owner, repo, source, visibility,
+               branch, language, starred, created_at, updated_at
+        FROM projects
+        WHERE id = %s AND user_id = %s
+        """,
         (project_id, user_id),
     )
 
 
 def find_by_identity(user_id: int, name: str, owner: str, repo: str) -> dict[str, Any] | None:
     return find_one(
-        f"""
-        SELECT {PROJECT_COLUMNS}
+        """
+        SELECT id, user_id, name, description, owner, repo, source, visibility,
+               branch, language, starred, created_at, updated_at
         FROM projects
         WHERE user_id = %s AND name = %s AND owner = %s AND repo = %s
         """,
@@ -151,4 +168,3 @@ def stats_for_project(project_id: int) -> dict[str, int]:
         "risks": int((risk_count or {}).get("count") or 0),
         "runs": int((run_count or {}).get("count") or 0),
     }
-

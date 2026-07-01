@@ -29,12 +29,9 @@ class Settings(BaseSettings):
     kafka_bootstrap_servers: str
     ollama_base_url: str
 
-    auth_cookie_name: str
     jwe_secret: str
     access_token_ttl_seconds: int = 900
     refresh_token_ttl_seconds: int = 1209600
-    session_ttl_seconds: int = 86400
-    secure_cookie: bool = False
 
 
 settings = Settings()

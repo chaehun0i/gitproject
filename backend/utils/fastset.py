@@ -9,6 +9,7 @@ from src.apis.analysis_runs import analysis_runs_router
 from src.apis.auth import auth_router
 from src.apis.projects import projects_router
 from src.apis.settings import settings_router
+from src.apis.websocket import websocket_router
 from src.apis.workspace import workspace_router
 from utils.schema import ensure_schema
 
@@ -21,6 +22,7 @@ def register_routers(app: FastAPI) -> None:
     app.include_router(analysis_runs_router, prefix="/analysis/runs")
     app.include_router(workspace_router, prefix="/workspace")
     app.include_router(settings_router, prefix="/settings")
+    app.include_router(websocket_router, prefix="/ws")
 
 
 def run() -> FastAPI:

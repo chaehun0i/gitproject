@@ -2,67 +2,24 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 
-from core.security import hash_password, verify_password
-from src.apis.auth import get_authenticated_user
 from src.models.settings import NotificationUpdate, PasswordUpdate, ProfileUpdate
-from utils.db import find_one, save
+from src.services.auth_service import get_authenticated_user
+from src.services.setting_service import (
+    get_settings as get_settings_service,
+    unlink_integration as unlink_integration_service,
+    update_notifications as update_notifications_service,
+    update_password as update_password_service,
+    update_profile as update_profile_service,
+)
 
 settings_router = APIRouter(tags=["settings"])
 
 
-def _profile(user: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "id": user["id"],
-        "name": user["name"],
-        "email": user["email"],
-        "role": "developer",
-        "joinedAt": str(user.get("created_at") or ""),
-        "lastLoginAt": None,
-    }
-
-
-def _notification_row(user_id: int) -> dict[str, bool]:
-    row = find_one(
-        """
-        SELECT analysis_done, issue_detected, product_news, weekly_report
-        FROM user_notification_settings
-        WHERE user_id = %s
-        """,
-        (user_id,),
-    )
-    if not row:
-        save(
-            "INSERT IGNORE INTO user_notification_settings (user_id) VALUES (%s)",
-            (user_id,),
-        )
-        row = {
-            "analysis_done": True,
-            "issue_detected": True,
-            "product_news": True,
-            "weekly_report": False,
-        }
-    return {
-        "analysisDone": bool(row["analysis_done"]),
-        "issueDetected": bool(row["issue_detected"]),
-        "productNews": bool(row["product_news"]),
-        "weeklyReport": bool(row["weekly_report"]),
-    }
-
-
 @settings_router.get("")
 async def get_settings(user: dict[str, Any] = Depends(get_authenticated_user)) -> dict[str, dict[str, Any]]:
-    settings = {
-        "profile": _profile(user),
-        "integrations": [
-            {"key": "github", "title": "GitHub", "value": "not connected", "status": "available"},
-            {"key": "upload", "title": "Git upload", "value": "enabled", "status": "available"},
-            {"key": "notice", "title": "Notifications", "value": "enabled", "status": "active"},
-        ],
-        "notifications": _notification_row(int(user["id"])),
-    }
-    return {"settings": settings}
+    return get_settings_service(user)
 
 
 @settings_router.patch("/profile")
@@ -70,24 +27,7 @@ async def update_profile(
     payload: ProfileUpdate,
     user: dict[str, Any] = Depends(get_authenticated_user),
 ) -> dict[str, dict[str, Any]]:
-    next_name = payload.name or user["name"]
-    next_email = payload.email or user["email"]
-    if next_email != user["email"]:
-        existing = find_one(
-            "SELECT id FROM users WHERE email = %s AND id <> %s",
-            (next_email, user["id"]),
-        )
-        if existing:
-            raise HTTPException(status.HTTP_409_CONFLICT, detail="Email already exists")
-    save(
-        "UPDATE users SET name = %s, email = %s WHERE id = %s",
-        (next_name, next_email, user["id"]),
-    )
-    updated = find_one(
-        "SELECT id, email, name, created_at FROM users WHERE id = %s",
-        (user["id"],),
-    )
-    return {"user": _profile(updated or user)}
+    return update_profile_service(payload, user)
 
 
 @settings_router.patch("/password")
@@ -95,18 +35,7 @@ async def update_password(
     payload: PasswordUpdate,
     user: dict[str, Any] = Depends(get_authenticated_user),
 ) -> dict[str, bool]:
-    current_password = payload.currentPassword or payload.current_password
-    new_password = payload.newPassword or payload.new_password or payload.password
-    if not current_password or not new_password:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Current and new password are required")
-    row = find_one("SELECT password_hash FROM users WHERE id = %s", (user["id"],))
-    if row is None or not verify_password(current_password, row["password_hash"]):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid current password")
-    save(
-        "UPDATE users SET password_hash = %s WHERE id = %s",
-        (hash_password(new_password), user["id"]),
-    )
-    return {"ok": True}
+    return update_password_service(payload, user)
 
 
 @settings_router.patch("/notifications")
@@ -114,31 +43,10 @@ async def update_notifications(
     payload: NotificationUpdate,
     user: dict[str, Any] = Depends(get_authenticated_user),
 ) -> dict[str, dict[str, bool]]:
-    save(
-        """
-        INSERT INTO user_notification_settings
-            (user_id, analysis_done, issue_detected, product_news, weekly_report)
-        VALUES (%s, %s, %s, %s, %s)
-        ON DUPLICATE KEY UPDATE
-            analysis_done = VALUES(analysis_done),
-            issue_detected = VALUES(issue_detected),
-            product_news = VALUES(product_news),
-            weekly_report = VALUES(weekly_report)
-        """,
-        (
-            user["id"],
-            payload.analysisDone,
-            payload.issueDetected,
-            payload.productNews,
-            payload.weeklyReport,
-        ),
-    )
-    return {"notifications": _notification_row(int(user["id"]))}
+    return update_notifications_service(payload, user)
 
 
 @settings_router.delete("/integrations/{key}")
-async def unlink_integration(
-    key: str,
-    user: dict[str, Any] = Depends(get_authenticated_user),
-) -> dict[str, bool | str]:
-    return {"ok": True, "key": key}
+async def unlink_integration(key: str, user: dict[str, Any] = Depends(get_authenticated_user)) -> dict[str, bool | str]:
+    return unlink_integration_service(key, user)
+

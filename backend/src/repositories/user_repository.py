@@ -4,20 +4,16 @@ from typing import Any
 
 from utils.db import add_key, find_one, save
 
-USER_COLUMNS = "id, email, name, password_hash, created_at"
-SAFE_USER_COLUMNS = "id, email, name, created_at"
-
-
 def find_by_id(user_id: int) -> dict[str, Any] | None:
     return find_one(
-        f"SELECT {SAFE_USER_COLUMNS} FROM users WHERE id = %s",
+        "SELECT id, email, name, created_at FROM users WHERE id = %s",
         (user_id,),
     )
 
 
 def find_by_email(email: str) -> dict[str, Any] | None:
     return find_one(
-        f"SELECT {USER_COLUMNS} FROM users WHERE email = %s",
+        "SELECT id, email, name, password_hash, created_at FROM users WHERE email = %s",
         (email,),
     )
 
@@ -60,4 +56,3 @@ def update_password_hash(user_id: int, password_hash: str) -> None:
         "UPDATE users SET password_hash = %s WHERE id = %s",
         (password_hash, user_id),
     )
-

@@ -4,12 +4,6 @@ from typing import Any
 
 from utils.db import add_key, find_all, find_one, save
 
-ANALYSIS_RUN_COLUMNS = (
-    "id, project_id, user_id, source_type, status, progress, title, "
-    "repository, branch, range_label, options, metadata, created_at, updated_at"
-)
-
-
 def create_run(
     project_id: int,
     user_id: int,
@@ -33,15 +27,21 @@ def create_run(
 
 def get_by_id_and_user(run_id: int, user_id: int) -> dict[str, Any] | None:
     return find_one(
-        f"SELECT {ANALYSIS_RUN_COLUMNS} FROM analysis_runs WHERE id = %s AND user_id = %s",
+        """
+        SELECT id, project_id, user_id, source_type, status, progress, title,
+               repository, branch, range_label, options, metadata, created_at, updated_at
+        FROM analysis_runs
+        WHERE id = %s AND user_id = %s
+        """,
         (run_id, user_id),
     )
 
 
 def get_latest_by_user(user_id: int) -> dict[str, Any] | None:
     return find_one(
-        f"""
-        SELECT {ANALYSIS_RUN_COLUMNS}
+        """
+        SELECT id, project_id, user_id, source_type, status, progress, title,
+               repository, branch, range_label, options, metadata, created_at, updated_at
         FROM analysis_runs
         WHERE user_id = %s
         ORDER BY created_at DESC
@@ -83,4 +83,3 @@ def update_progress(run_id: int, user_id: int, status: str, progress: int) -> No
         """,
         (status, progress, run_id, user_id),
     )
-
