@@ -6,7 +6,6 @@ from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
-from pydantic import BaseModel, EmailStr, Field
 
 from core.security import (
     create_session_id,
@@ -17,39 +16,11 @@ from core.security import (
     verify_password,
 )
 from core.settings import settings
+from src.models.auth import AuthRequest, AuthResponse, LogoutRequest, RefreshRequest, UserResponse
 from utils.db import add_key, find_one, save
 from utils.rediscl import delete_refresh_session, get_refresh_session, set_refresh_session
 
 auth_router = APIRouter(tags=["auth"])
-
-
-class AuthRequest(BaseModel):
-    email: EmailStr
-    password: str = Field(min_length=4)
-    name: str | None = None
-
-
-class RefreshRequest(BaseModel):
-    refreshToken: str
-
-
-class LogoutRequest(BaseModel):
-    refreshToken: str | None = None
-
-
-class UserResponse(BaseModel):
-    id: int
-    email: EmailStr
-    name: str
-    role: str = "developer"
-    joinedAt: str | None = None
-    lastLoginAt: str | None = None
-
-
-class AuthResponse(BaseModel):
-    user: UserResponse
-    accessToken: str
-    refreshToken: str
 
 
 def _utc_now() -> datetime:

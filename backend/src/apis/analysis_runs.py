@@ -6,9 +6,9 @@ from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
-from pydantic import BaseModel, Field
 
 from src.apis.auth import get_authenticated_user
+from src.models.analysis_runs import AnalysisRunCreate
 from utils.db import add_key, find_all, find_one, save
 
 analysis_runs_router = APIRouter(tags=["analysis"])
@@ -17,18 +17,6 @@ STATUS_DONE = "\ubd84\uc11d \uc644\ub8cc"
 STATUS_RUNNING = "\ubd84\uc11d \uc911"
 STATUS_WAITING = "\ubd84\uc11d \ub300\uae30"
 STATUS_FAILED = "\ubd84\uc11d \uc2e4\ud328"
-
-
-class AnalysisRunCreate(BaseModel):
-    type: str | None = None
-    repository: str | None = None
-    branch: str | None = "main"
-    range: str | None = None
-    projectName: str | None = None
-    options: list[str] = Field(default_factory=list)
-    projectId: int | None = None
-    project_id: int | None = None
-    title: str | None = None
 
 
 def _format_datetime(value: Any) -> str | None:

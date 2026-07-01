@@ -3,33 +3,13 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr, Field
 
 from core.security import hash_password, verify_password
 from src.apis.auth import get_authenticated_user
+from src.models.settings import NotificationUpdate, PasswordUpdate, ProfileUpdate
 from utils.db import find_one, save
 
 settings_router = APIRouter(tags=["settings"])
-
-
-class ProfileUpdate(BaseModel):
-    name: str | None = Field(default=None, min_length=1, max_length=100)
-    email: EmailStr | None = None
-
-
-class PasswordUpdate(BaseModel):
-    currentPassword: str | None = None
-    current_password: str | None = None
-    newPassword: str | None = None
-    new_password: str | None = None
-    password: str | None = None
-
-
-class NotificationUpdate(BaseModel):
-    analysisDone: bool = True
-    issueDetected: bool = True
-    productNews: bool = True
-    weeklyReport: bool = False
 
 
 def _profile(user: dict[str, Any]) -> dict[str, Any]:

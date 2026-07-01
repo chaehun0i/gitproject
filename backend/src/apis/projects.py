@@ -4,9 +4,9 @@ from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, Field
 
 from src.apis.auth import get_authenticated_user
+from src.models.projects import ProjectPayload
 from utils.db import add_key, find_all, find_one, save
 
 projects_router = APIRouter(tags=["projects"])
@@ -15,18 +15,6 @@ STATUS_DONE = "\ubd84\uc11d \uc644\ub8cc"
 STATUS_RUNNING = "\ubd84\uc11d \uc911"
 STATUS_WAITING = "\ubd84\uc11d \ub300\uae30"
 STATUS_FAILED = "\ubd84\uc11d \uc2e4\ud328"
-
-
-class ProjectPayload(BaseModel):
-    name: str = Field(min_length=1, max_length=100)
-    description: str | None = None
-    owner: str | None = None
-    repo: str | None = None
-    source: str | None = None
-    visibility: str | None = "private"
-    branch: str | None = "main"
-    language: str | None = None
-    starred: bool = False
 
 
 def _format_datetime(value: Any) -> str | None:
