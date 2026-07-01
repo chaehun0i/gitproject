@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { PipelineVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/analysisProgressPage.css";
 
 const steps = [
   ["collect", "커밋 수집", "연결된 저장소 또는 업로드 파일에서 변경 기록을 모읍니다."],

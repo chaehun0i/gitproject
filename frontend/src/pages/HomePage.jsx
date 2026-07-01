@@ -1,6 +1,8 @@
 import ActivityLineChart from "@components/charts/ActivityLineChart";
 import PageShell from "@pages/PageShell";
 import productVisual from "@assets/images/commitlens-product-visual.png";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/homePage.css";
 
 const kpis = [
   ["총 프로젝트", "5", "GitHub 3 · 업로드 2"],

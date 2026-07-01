@@ -2,6 +2,7 @@ import MessageTypeBarChart from "@components/charts/MessageTypeBarChart";
 import { useState } from "react";
 import PageShell from "@pages/PageShell";
 import { notify } from "@utils/feedback";
+import "@styles/pages/appPages.css";
 
 const recommendedMessages = [
   {

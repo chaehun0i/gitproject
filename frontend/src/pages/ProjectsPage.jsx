@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import AnalysisStartDialog from "@components/analysis/AnalysisStartDialog";
-import AppLayout from "@components/layout/AppLayout";
 import { RepositoryEmptyVisual } from "@components/common/ProductVisuals";
 import { confirmAction } from "@utils/feedback";
 import { mockOrEmpty } from "@utils/mockConfig";
-import "@styles/pages/appPages.css";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/projectsPage.css";
 
 const mockProjects = [
   {
@@ -170,13 +170,8 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
   };
 
   return (
-    <AppLayout currentPage={currentPage} onNavigate={onNavigate}>
+    <>
       <header className="project-header refined-header">
-        <div>
-          <span className="title-icon">R</span>
-          <h1>내 프로젝트</h1>
-          <p>연결된 프로젝트와 최근 분석 상태를 관리합니다.</p>
-        </div>
         <div className="project-actions">
           <AnalysisStartDialog onStart={() => onNavigate("progress")} trigger={<button type="button">새 분석 시작</button>} />
         </div>
@@ -289,7 +284,7 @@ const ProjectsPage = ({ currentPage, onNavigate }) => {
           ))}
         </aside>
       </section>
-    </AppLayout>
+    </>
   );
 };
 

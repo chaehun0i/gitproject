@@ -2,6 +2,8 @@ import ActivityLineChart from "@components/charts/ActivityLineChart";
 import ChangeTypeDonutChart from "@components/charts/ChangeTypeDonutChart";
 import { InsightVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/resultSummaryPage.css";
 
 const summaryMetrics = [
   ["분석 커밋", "128", "변경 기록 기준"],

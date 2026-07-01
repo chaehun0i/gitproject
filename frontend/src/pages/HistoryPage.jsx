@@ -3,6 +3,7 @@ import ActivityLineChart from "@components/charts/ActivityLineChart";
 import ChangeTypeDonutChart from "@components/charts/ChangeTypeDonutChart";
 import { RepositoryEmptyVisual } from "@components/common/ProductVisuals";
 import PageShell from "@pages/PageShell";
+import "@styles/pages/appPages.css";
 
 const historyItems = [
   { project: "ai-commit-analyzer", branch: "feature/FE_all", source: "Git 산출물", status: "분석 완료", commits: "128", files: "42", runtime: "3분 12초", createdAt: "2026.06.30" },

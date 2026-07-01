@@ -1,0 +1,149 @@
+﻿.progress-bar,
+.mini-progress,
+.impact-meter {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.progress-bar span,
+.mini-progress span,
+.impact-meter span {
+  display: block;
+  width: var(--score, 72%);
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), #7c3aed);
+}
+
+.progress-step {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eef2f7;
+}
+
+
+.preview-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.preview-row span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.progress-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.75fr);
+  gap: 22px;
+  align-items: center;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(6, 182, 212, 0.16), transparent 28%),
+    linear-gradient(135deg, #ffffff, #f5f3ff);
+}
+
+.progress-hero h2,
+.detail-hero h2,
+.result-action-bar h2 {
+  margin: 10px 0 8px;
+  color: var(--title);
+  font-size: clamp(1.45rem, 2.2vw, 2.2rem);
+}
+
+.progress-bar.large {
+  height: 14px;
+  margin-top: 20px;
+}
+
+.progress-meta,
+.result-action-bar,
+.completion-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.progress-meta {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+.progress-meta b {
+  color: var(--title);
+  font-size: 1.55rem;
+}
+
+.progress-step span {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--muted);
+  background: #f1f5f9;
+  font-weight: 900;
+}
+
+.progress-step.done span,
+.progress-step.active span {
+  color: #ffffff;
+  background: var(--gradient-ai);
+}
+
+.progress-step p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.progress-step em {
+  align-self: start;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: #eef2ff;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 0.78rem;
+}
+
+.live-console {
+  display: grid;
+  gap: 8px;
+  max-height: 112px;
+  overflow: hidden;
+  padding: 14px;
+  border-radius: 10px;
+  background: #0f172a;
+}
+
+.live-console-card {
+  position: relative;
+}
+
+.live-console-card::after {
+  content: "상세 로그 보기";
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  border-radius: 8px;
+  color: var(--primary);
+  background: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.live-console code {
+  color: #c7d2fe;
+  white-space: normal;
+}
+

@@ -1,0 +1,335 @@
+﻿.analysis-start-card,
+.project-main,
+.project-help,
+.repo-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.analysis-start-card {
+  display: grid;
+  gap: 18px;
+  width: min(760px, 100%);
+}
+
+.analysis-section {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #edf2fb;
+  border-radius: 12px;
+}
+
+.section-number {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--blue);
+  font-weight: 900;
+}
+
+.source-choice-grid,
+.analysis-option-grid,
+.project-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.analysis-option-grid,
+.project-card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.source-choice,
+.option-card {
+  display: grid;
+  gap: 8px;
+  min-height: 92px;
+  padding: 16px;
+  border: 1px solid #dfe7f7;
+  border-radius: 10px;
+  background: #fbfdff;
+}
+
+.source-choice.active,
+.option-card:has(input:checked) {
+  border-color: #8da2ff;
+  background: #f3f6ff;
+}
+
+.range-buttons,
+.project-actions,
+.repo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.range-buttons button,
+.project-actions button,
+.repo-actions button,
+.tip-card button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f7;
+  border-radius: 8px;
+  color: var(--blue);
+  background: #ffffff;
+  font-weight: 900;
+}
+
+.range-buttons button.active,
+.project-actions button:last-child {
+  color: #ffffff;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.commit-range,
+.project-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.project-toolbar {
+  grid-template-columns: minmax(220px, 1fr) 160px 170px 44px 44px;
+  margin-bottom: 20px;
+}
+
+.project-toolbar button.active {
+  color: #ffffff;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.repo-card {
+  display: grid;
+  gap: 16px;
+  min-height: 286px;
+}
+
+.project-card-grid.list-mode {
+  grid-template-columns: 1fr;
+}
+
+.project-card-grid.list-mode .repo-card {
+  min-height: 0;
+  padding: 18px;
+}
+
+.project-card-grid.list-mode .repo-card .repo-head {
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+}
+
+.repo-card.selected {
+  border-color: var(--blue);
+}
+
+.repo-head {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 28px;
+  gap: 12px;
+}
+
+.repo-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 14px;
+  border-radius: 10px;
+  background: #f2f5fb;
+  text-align: center;
+}
+
+.repo-stats div + div {
+  border-left: 1px solid #d8e0ef;
+}
+
+.repo-actions {
+  justify-content: flex-start;
+  margin-top: auto;
+}
+
+.repo-actions button {
+  flex: 1 1 150px;
+}
+
+
+/* Refined page UX */
+.refined-header {
+  align-items: center;
+  padding-bottom: 4px;
+}
+
+.refined-header h1,
+.project-header h1 {
+  margin: 6px 0 6px;
+}
+
+.title-icon {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  font-weight: 900;
+}
+
+.refined-project-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  align-items: start;
+}
+
+.refined-toolbar {
+  grid-template-columns: minmax(220px, 1fr) minmax(140px, 0.45fr) minmax(150px, 0.5fr) auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.refined-toolbar label {
+  gap: 6px;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.segmented-view {
+  display: inline-grid;
+  grid-template-columns: 38px 38px;
+  gap: 6px;
+  height: 42px;
+  padding: 3px;
+  border: 1px solid #dfe7f7;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.segmented-view button {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  color: #64748b;
+  background: transparent;
+}
+
+.segmented-view button.active {
+  color: #ffffff;
+  background: var(--blue);
+}
+
+.refined-repo {
+  min-height: 248px;
+  padding: 20px;
+}
+
+.refined-repo h2,
+.refined-help h2,
+.analysis-preview-card h2 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.refined-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progress-label {
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #315df4;
+  background: #eaf0ff;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 0.78rem;
+}
+
+.refined-help {
+  position: sticky;
+  top: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.help-step {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #edf2fb;
+  border-radius: 10px;
+  background: #fbfdff;
+}
+
+.help-step > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--blue);
+  font-weight: 900;
+}
+
+.help-step b,
+.help-step p {
+  display: block;
+  margin: 0;
+}
+
+
+/* Page polish additions */
+.repo-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.repo-meta-row span {
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #475569;
+  background: #f1f5f9;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.project-empty-state,
+.history-empty {
+  display: grid;
+  min-height: 340px;
+  place-items: center;
+  gap: 10px;
+  padding: 32px;
+  border: 1px dashed rgba(79, 70, 229, 0.28);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f8faff);
+  text-align: center;
+}
+
+.project-empty-state .empty-visual,
+.history-empty .empty-visual {
+  max-width: 260px;
+}
+

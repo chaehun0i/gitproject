@@ -1,0 +1,74 @@
+﻿.table-row {
+  grid-template-columns: minmax(280px, 1.35fr) 110px minmax(140px, 0.7fr) 120px 76px;
+}
+
+.profile-card-large {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile-card-large > span {
+  display: grid;
+  width: 74px;
+  height: 74px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--blue), #8b5cf6);
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+
+/* Page polish additions */
+.repo-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.repo-meta-row span {
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #475569;
+  background: #f1f5f9;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.project-empty-state,
+.history-empty {
+  display: grid;
+  min-height: 340px;
+  place-items: center;
+  gap: 10px;
+  padding: 32px;
+  border: 1px dashed rgba(79, 70, 229, 0.28);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f8faff);
+  text-align: center;
+}
+
+.project-empty-state .empty-visual,
+.history-empty .empty-visual {
+  max-width: 260px;
+}
+
+
+.history-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.3fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.table-head {
+  min-height: 42px;
+  color: var(--muted);
+  background: #f8fafc;
+  border-radius: 8px;
+  font-weight: 900;
+}
+

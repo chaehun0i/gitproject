@@ -1,0 +1,337 @@
+﻿.refined-settings {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.75fr);
+  align-items: start;
+}
+
+.refined-profile {
+  grid-column: 1 / -1;
+}
+
+.refined-profile small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.settings-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.settings-summary-grid div {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid #edf2fb;
+  border-radius: 10px;
+  background: #fbfdff;
+}
+
+.settings-summary-grid span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+@media (max-width: 1180px) {
+  .refined-project-grid,
+  .analysis-workspace,
+  .refined-detail-grid,
+  .refined-message-layout,
+  .refined-settings,
+  .refined-file-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .refined-help,
+  .analysis-preview-card,
+  .refined-commit-side {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .refined-toolbar,
+  .form-grid-2,
+  .result-metrics.compact,
+  .settings-summary-grid,
+  .commit-mini-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .segmented-view {
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Indigo/Violet product polish */
+.home-hero button,
+.analysis-submit,
+.project-actions button:last-child,
+.range-buttons button.active,
+.segmented-view button.active,
+.panel-title button,
+.page-card button:not(.source-choice):not(.option-card),
+.table-card button {
+  color: #ffffff;
+  border-color: transparent;
+  background: var(--primary);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.18);
+}
+
+.home-hero button:hover,
+.analysis-submit:hover,
+.project-actions button:last-child:hover,
+.range-buttons button.active:hover,
+.segmented-view button.active:hover,
+.panel-title button:hover,
+.page-card button:not(.source-choice):not(.option-card):hover,
+.table-card button:hover {
+  background: var(--primary-hover);
+}
+
+.analysis-submit,
+.home-hero button {
+  background: var(--gradient-ai);
+}
+
+.project-actions button:first-child,
+.repo-actions button,
+.range-buttons button,
+.side-actions button:last-child {
+  color: var(--secondary);
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.project-actions button:first-child:hover,
+.repo-actions button:hover,
+.range-buttons button:hover,
+.side-actions button:last-child:hover {
+  color: #ffffff;
+  border-color: var(--secondary);
+  background: var(--secondary);
+}
+
+.repo-actions button:last-child {
+  color: var(--error);
+  border-color: #fecaca;
+  background: #fff1f2;
+}
+
+.repo-actions button:last-child:hover {
+  color: #ffffff;
+  border-color: var(--error);
+  background: var(--error);
+}
+
+.progress-bar span,
+.mini-progress span,
+.impact-meter span,
+.help-step > span {
+  background: var(--gradient-ai);
+}
+
+.selected-message,
+.repo-card.selected {
+  border-color: rgba(124, 58, 237, 0.45);
+  box-shadow: 0 18px 46px rgba(79, 70, 229, 0.12);
+}
+
+.source-choice.active,
+.option-card:has(input:checked) {
+  border-color: rgba(79, 70, 229, 0.52);
+  background: #f5f3ff;
+}
+
+.settings-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.65fr);
+  gap: 18px;
+}
+
+.settings-profile-panel,
+.settings-env-panel {
+  display: grid;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.settings-profile-panel {
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  max-width: none;
+}
+
+.settings-profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.settings-profile-meta span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: #eef2ff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.settings-card-description {
+  margin: -2px 0 4px;
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.settings-profile-panel h2,
+.settings-profile-panel p,
+.settings-env-panel p {
+  margin: 0;
+}
+
+.profile-avatar-large {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  border-radius: 18px;
+  color: #ffffff;
+  background: var(--gradient-ai);
+  font-size: 1.2rem;
+  font-weight: 950;
+}
+
+.settings-env-panel {
+  align-content: center;
+  background:
+    linear-gradient(135deg, rgba(79, 70, 229, 0.94), rgba(124, 58, 237, 0.92)),
+    #4f46e5;
+  color: #ffffff;
+}
+
+.api-settings-card,
+.integration-item:nth-child(n+3) {
+  display: none;
+}
+
+.settings-profile-panel button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: var(--gradient-ai);
+  font-size: 0;
+  font-weight: 900;
+}
+
+.settings-profile-panel button::after {
+  content: "프로필 수정";
+  font-size: 0.9rem;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.toggle-row input {
+  order: 2;
+  width: 42px;
+  min-height: 22px;
+  accent-color: var(--primary);
+}
+
+.settings-env-panel span,
+.settings-env-panel p {
+  color: #e0e7ff;
+}
+
+.settings-env-panel b {
+  font-size: 1.45rem;
+}
+
+.integration-list {
+  display: grid;
+  gap: 12px;
+}
+
+.integration-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 76px;
+  padding: 14px;
+  border: 1px solid #edf2fb;
+  border-radius: 10px;
+  background: #fbfdff;
+}
+
+.integration-item > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--primary);
+  background: #eef2ff;
+  font-size: 0.76rem;
+  font-weight: 950;
+}
+
+.integration-item b,
+.integration-item p {
+  display: block;
+  margin: 0;
+}
+
+.api-settings-card {
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .settings-overview,
+  .settings-profile-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.runtime-banner-card {
+  grid-template-columns: minmax(0, 1fr) 160px;
+  overflow: hidden;
+}
+
+.runtime-banner-card .runtime-visual {
+  width: 180px;
+}
+
+.danger-zone-card {
+  border-color: #fecaca;
+  background: #fff7f7;
+}
+
+.danger-zone-card p {
+  margin: 0;
+  color: #7f1d1d;
+  line-height: 1.6;
+}
+
+.danger-zone-card button {
+  background: var(--error) !important;
+}
+

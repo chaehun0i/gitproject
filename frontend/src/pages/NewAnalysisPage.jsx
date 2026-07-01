@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import AnalysisStartDialog from "@components/analysis/AnalysisStartDialog";
 import PageShell from "@pages/PageShell";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/newAnalysisPage.css";
 
 const analysisOptions = [
   ["summary", "변경 요약", "파일별 변경 흐름과 핵심 내용을 정리합니다."],

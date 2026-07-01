@@ -1,0 +1,144 @@
+﻿.analysis-start-card,
+.project-main,
+.project-help,
+.repo-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.analysis-start-card {
+  display: grid;
+  gap: 18px;
+  width: min(760px, 100%);
+}
+
+.analysis-section {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #edf2fb;
+  border-radius: 12px;
+}
+
+.section-number {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--blue);
+  font-weight: 900;
+}
+
+.source-choice-grid,
+.analysis-option-grid,
+.project-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.analysis-option-grid,
+.project-card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.source-choice,
+.option-card {
+  display: grid;
+  gap: 8px;
+  min-height: 92px;
+  padding: 16px;
+  border: 1px solid #dfe7f7;
+  border-radius: 10px;
+  background: #fbfdff;
+}
+
+.source-choice.active,
+.option-card:has(input:checked) {
+  border-color: #8da2ff;
+  background: #f3f6ff;
+}
+
+.range-buttons,
+.project-actions,
+.repo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.range-buttons button,
+.project-actions button,
+.repo-actions button,
+.tip-card button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #dfe7f7;
+  border-radius: 8px;
+  color: var(--blue);
+  background: #ffffff;
+  font-weight: 900;
+}
+
+.range-buttons button.active,
+.project-actions button:last-child {
+  color: #ffffff;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+
+.analysis-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 18px;
+  align-items: start;
+}
+
+.refined-analysis-card {
+  width: 100%;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.analysis-preview-card {
+  position: sticky;
+  top: 20px;
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #f7f9ff);
+  box-shadow: var(--shadow);
+}
+
+.message-list {
+  align-content: start;
+}
+
+.message-card-head {
+  align-items: flex-start;
+}
+
+.analysis-preview-card code {
+  display: block;
+  overflow-x: auto;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #172554;
+  background: #eef3ff;
+  font-size: 0.82rem;
+}
+

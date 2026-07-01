@@ -1,5 +1,7 @@
 import { useState } from "react";
 import PageShell from "@pages/PageShell";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/detailAnalysisPage.css";
 
 const files = [
   ["src/api/auth/login.ts", "TypeScript", "수정", "+45", "-23", "높음"],

@@ -1,22 +1,17 @@
-import { useDispatch, useSelector } from "react-redux";
-import { logout as logoutAction } from "@stores/slices/authSlice";
 import commitlensLogo from "@assets/images/commitlens-logo.png";
-import { logoutUser } from "../../api";
-import { notify } from "@utils/feedback";
 import "@styles/layout/sidebar.css";
 
 const navGroups = [
   {
-    label: "Workspace",
+    label: "작업 공간",
     items: [
       ["home", "홈", "H"],
       ["projects", "프로젝트", "R"],
-      ["newAnalysis", "새 분석", "+"],
       ["history", "분석 내역", "L"],
     ],
   },
   {
-    label: "Analysis",
+    label: "분석 결과",
     items: [
       ["result", "결과 요약", "S"],
       ["detail", "파일 상세", "D"],
@@ -24,28 +19,12 @@ const navGroups = [
     ],
   },
   {
-    label: "Account",
-    items: [["myPage", "설정", "G"]],
+    label: "계정",
+    items: [["myPage", "마이페이지", "G"]],
   },
 ];
 
 const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
-  const initials = user.name?.slice(0, 2).toUpperCase() ?? "CL";
-
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-    } catch {
-      notify.info("로컬 데모 상태로 로그아웃합니다.");
-    } finally {
-      dispatch(logoutAction());
-      notify.success("로그아웃되었습니다.");
-      onNavigate("dashboard");
-    }
-  };
-
   return (
     <aside className="sidebar">
       <div className="sidebar-head">
@@ -66,8 +45,8 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
       <div className="sidebar-status">
         <span />
         <div>
-          <b>분석 준비 완료</b>
-          <p>프로젝트를 선택해 분석을 시작하세요</p>
+          <b>작업 준비 완료</b>
+          <p>상단의 새 분석 버튼으로 시작하세요</p>
         </div>
       </div>
 
@@ -91,25 +70,13 @@ const Sidebar = ({ currentPage, isCollapsed, onNavigate, onToggle }) => {
         ))}
       </nav>
 
-      <div className="sidebar-pipeline" aria-hidden="true">
-        <span>변경</span>
-        <i />
-        <span>분석</span>
-        <i />
-        <span>결과</span>
-      </div>
+      <aside className="sidebar-summary">
+        <span>최근 분석</span>
+        <strong>ai-commit-analyzer</strong>
+        <p>검토할 변경 8개가 정리되었습니다.</p>
+        <button type="button" onClick={() => onNavigate("result")}>결과 보기</button>
+      </aside>
 
-      <div className="profile">
-        <span>{initials}</span>
-        <div>
-          <strong>{user.name}</strong>
-          <p>{user.email}</p>
-        </div>
-        <button className="logout-button" type="button" onClick={handleLogout}>
-          <i>↩</i>
-          <span className="logout-text">로그아웃</span>
-        </button>
-      </div>
     </aside>
   );
 
