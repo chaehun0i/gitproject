@@ -14,9 +14,33 @@ const analysisOptions = [
 ];
 
 const commandGuide = [
-  "git log --stat --patch > commit-history.patch",
-  "git diff main...HEAD > changes.diff",
-  "git diff --name-only main...HEAD > changed-files.txt",
+  {
+    title: "현재 커밋하지 않은 작업 저장",
+    commands: [
+      "git status --short > changed-files.txt",
+      "git diff > working-changes.diff",
+      "git diff --staged > staged-changes.diff",
+    ],
+  },
+  {
+    title: "브랜치에 이미 커밋된 변경 저장",
+    commands: [
+      "git fetch origin",
+      "git log --reverse --stat --patch origin/main..HEAD > commit-history.patch",
+      "git diff origin/main...HEAD > branch-changes.diff",
+      "git diff --name-status origin/main...HEAD > branch-changed-files.txt",
+    ],
+  },
+  {
+    title: "커밋된 변경과 현재 작업까지 함께 저장",
+    commands: [
+      "git fetch origin",
+      "git log --reverse --stat --patch origin/main..HEAD > commit-history.patch",
+      "git diff origin/main > all-current-changes.diff",
+      "git diff --name-status origin/main > all-current-changed-files.txt",
+      "git status --short > working-status.txt",
+    ],
+  },
 ];
 
 const NewAnalysisPage = ({ currentPage, onNavigate }) => {
@@ -162,7 +186,16 @@ const NewAnalysisPage = ({ currentPage, onNavigate }) => {
                 <h2>업로드 가이드</h2>
                 <p>민감한 토큰, 비밀번호, 운영 환경 값은 업로드 전에 제거하는 것을 권장합니다.</p>
                 <div className="command-help">
-                  {commandGuide.map((command) => <code key={command}>{command}</code>)}
+                  {commandGuide.map((group) => (
+                    <div className="command-group" key={group.title}>
+                      <span>{group.title}</span>
+                      {group.commands.map((command) => <code key={command}>{command}</code>)}
+                    </div>
+                  ))}
+                  <small>
+                    base 브랜치가 main이 아니면 origin/main을 실제 base 브랜치로 바꾸세요.
+                    `git diff origin/main...HEAD`는 base 이후 커밋 변경만, `git diff origin/main`은 현재 작업트리 변경까지 포함합니다.
+                  </small>
                 </div>
               </div>
             </article>

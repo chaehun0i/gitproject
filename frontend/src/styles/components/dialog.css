@@ -10,11 +10,12 @@
   top: 50%;
   left: 50%;
   z-index: 51;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   width: min(560px, calc(100vw - 32px));
   max-height: min(820px, calc(100vh - 32px));
   gap: 16px;
-  overflow: auto;
+  overflow: hidden;
   padding: 24px;
   border-radius: 10px;
   background: #ffffff;
@@ -53,6 +54,7 @@
 }
 
 .dialog-head button {
+  flex: 0 0 auto;
   width: 32px;
   height: 32px;
   border: 0;
@@ -67,9 +69,40 @@
 }
 
 .analysis-stepper {
+  flex: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+}
+
+.analysis-dialog-body {
+  display: grid;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.dialog-section {
+  display: grid;
+  gap: 14px;
+}
+
+.dialog-section-title {
+  display: grid;
+  gap: 4px;
+}
+
+.dialog-section-title span {
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.dialog-section-title p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
 }
 
 .analysis-stepper span {
@@ -106,6 +139,16 @@
   color: var(--text);
   background: #fbfdff;
   text-align: left;
+  cursor: pointer;
+}
+
+.analysis-type-card b {
+  font-size: 1rem;
+}
+
+.analysis-type-card small {
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .analysis-type-card.active {
@@ -156,6 +199,11 @@
   border: 1px solid rgba(79, 70, 229, 0.16);
   border-radius: 12px;
   background: linear-gradient(180deg, #ffffff, #f7f8ff);
+}
+
+.dialog-summary-card small {
+  color: var(--muted);
+  font-weight: 800;
 }
 
 .dialog-summary-card h3,
@@ -210,6 +258,43 @@
   gap: 16px;
 }
 
+.compact-form {
+  gap: 12px;
+}
+
+.dialog-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.dialog-form input,
+.dialog-form select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #dbe5f3;
+  border-radius: 8px;
+  color: var(--text);
+  background: #ffffff;
+}
+
+.required-field {
+  position: relative;
+}
+
+.required-field::after {
+  content: "필수";
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #4338ca;
+  background: #eef2ff;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
 .command-help {
   display: grid;
   gap: 8px;
@@ -217,6 +302,22 @@
   border: 1px solid #dbe5f3;
   border-radius: 8px;
   background: #f8fbff;
+}
+
+.command-group {
+  display: grid;
+  gap: 6px;
+}
+
+.command-group span {
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.command-help small {
+  color: #64748b;
+  line-height: 1.5;
 }
 
 .command-help code {
@@ -231,7 +332,9 @@
 .upload-box {
   display: grid;
   min-height: 156px;
-  place-items: center;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
   padding: 20px;
   border: 1px dashed #9bb5ff;
   border-radius: 12px;
@@ -240,16 +343,57 @@
   text-align: center;
 }
 
+.upload-box.dragging {
+  border-color: #4f46e5;
+  background: #eef2ff;
+}
+
 .upload-box input {
   width: 1px;
   height: 1px;
   opacity: 0;
 }
 
+.upload-box em {
+  color: #4338ca;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.selected-file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selected-file-list span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: #334155;
+  background: #eef2ff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inline-validation {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  background: #fff7f7;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
 .dialog-actions {
+  flex: 0 0 auto;
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  padding-top: 2px;
 }
 
 .dialog-actions.space-between {
@@ -264,6 +408,11 @@
   color: var(--blue);
   background: #ffffff;
   font-weight: 900;
+}
+
+.dialog-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .terms-body {
@@ -298,5 +447,19 @@
   .analysis-type-grid,
   .compact-check-list.inline {
     grid-template-columns: 1fr;
+  }
+
+  .dialog-content {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    padding: 18px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog-actions button {
+    width: 100%;
   }
 }
