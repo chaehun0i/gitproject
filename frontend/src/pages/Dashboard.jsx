@@ -1,18 +1,17 @@
-import heroImage from "@assets/images/commitlens-hero.png";
+import commitlensLogo from "@assets/images/commitlens-logo.png";
 import "@styles/pages/landing.css";
 
 const usageSteps = [
-  ["1. 자료 준비", "GitHub를 연결하거나 git log, diff 산출물을 준비합니다."],
-  ["2. 분석 설정", "분석 방식과 범위를 선택하고 AI 분석을 시작합니다."],
-  ["3. 결과 확인", "변경 요약, 위험 파일, 추천 메시지를 확인합니다."],
-  ["4. 메시지 활용", "AI가 제안한 커밋 메시지를 복사해 사용합니다."],
+  ["GitHub 연결", "분석할 저장소나 변경 파일을 준비합니다."],
+  ["분석 설정", "브랜치와 기간을 선택하고 필요한 옵션을 고릅니다."],
+  ["AI 분석 실행", "변경 내용을 이해하기 쉬운 요약으로 정리합니다."],
+  ["결과 활용", "검토할 내용과 추천 메시지를 작업에 반영합니다."],
 ];
 
-const stats = [
-  ["98%+", "코드 변경 이해도"],
-  ["70%", "커밋 메시지 작성 시간 절약"],
-  ["2.5x", "리뷰와 공유 사이클 개선"],
-  ["1,248+", "처리 가능한 인사이트"],
+const valueCards = [
+  ["변경 흐름 정리", "흩어진 커밋과 파일 변경을 한눈에 이해할 수 있게 정리합니다."],
+  ["검토 포인트 발견", "리뷰 전에 확인하면 좋은 변경 사항을 먼저 보여줍니다."],
+  ["메시지 추천", "변경 내용에 맞는 커밋 메시지 후보를 제안합니다."],
 ];
 
 const Dashboard = ({ onNavigate }) => {
@@ -20,49 +19,69 @@ const Dashboard = ({ onNavigate }) => {
     <main className="landing-page">
       <header className="landing-nav">
         <button className="landing-brand" type="button" onClick={() => onNavigate("dashboard")}>
-          <span>&lt;/&gt;</span>
-          <strong>CommitLens</strong>
+          <img alt="CommitLens" src={commitlensLogo} />
         </button>
         <nav aria-label="서비스 메뉴">
           <a href="#features">기능</a>
-          <a href="#how">사용 방법</a>
-          <a href="#pricing">요금제</a>
-          <a href="#about">소개</a>
+          <a href="#how">사용 흐름</a>
+          <a href="#value">장점</a>
         </nav>
         <div>
           <button className="ghost-link" type="button" onClick={() => onNavigate("auth")}>로그인</button>
-          <button className="primary-action" type="button" onClick={() => onNavigate("signup")}>회원가입</button>
+          <button className="primary-action" type="button" onClick={() => onNavigate("signup")}>분석 시작하기</button>
         </div>
       </header>
 
-      <section className="landing-hero">
+      <section className="landing-hero" id="features">
         <div className="landing-copy">
+          <span className="landing-kicker">AI Commit Analysis Workspace</span>
           <h1>
-            AI가 코드 변경을 분석하고
+            커밋을 정리하고,
             <br />
-            <span>더 나은 커밋</span>을 제안합니다
+            변경 내용을 이해하고,
+            <br />
+            <span>메시지 추천받으세요.</span>
           </h1>
           <p>
-            복잡한 코드 변경도 AI가 이해하기 쉽게 요약하고, 상황에 맞는 커밋 메시지를
-            자동으로 생성해드립니다.
+            CommitLens는 복잡한 커밋 기록과 코드 변경을 사용자가 이해하기 쉬운 분석 결과로 정리합니다.
+            리뷰 전에 확인할 내용과 커밋 메시지 후보를 한곳에서 확인하세요.
           </p>
           <div className="landing-actions">
-            <button type="button" onClick={() => onNavigate("signup")}>무료로 시작하기</button>
-            <button type="button" onClick={() => onNavigate("auth")}>로그인하고 데모 보기</button>
           </div>
         </div>
-        <div className="landing-visual" aria-hidden="true">
-          <img alt="" src={heroImage} />
-          <div className="landing-badge">AI 분석 완료</div>
+        <div className="landing-product-card" aria-hidden="true">
+          <div className="product-card-top">
+            <span />
+            <span />
+            <span />
+            <b>CommitLens</b>
+          </div>
+          <div className="product-card-body">
+            <div className="analysis-preview-main">
+              <small>최근 분석</small>
+              <strong>ai-commit-analyzer</strong>
+              <p>인증 흐름 개선과 화면 구성 변경이 감지되었습니다.</p>
+            </div>
+            <div className="mini-diff-card">
+              <span className="line green" />
+              <span className="line green short" />
+              <span className="line red" />
+              <span className="line purple" />
+            </div>
+            <div className="message-suggestion-card">
+              <small>추천 메시지</small>
+              <code>feat(auth): 로그인 유지 흐름 개선</code>
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="landing-steps" id="how">
-        <h2>어떻게 사용하나요?</h2>
+        <h2>사용 흐름</h2>
         <div>
-          {usageSteps.map(([title, text]) => (
+          {usageSteps.map(([title, text], index) => (
             <article key={title}>
-              <span>&lt;/&gt;</span>
+              <span>{index + 1}</span>
               <h3>{title}</h3>
               <p>{text}</p>
             </article>
@@ -70,11 +89,11 @@ const Dashboard = ({ onNavigate }) => {
         </div>
       </section>
 
-      <section className="landing-stats">
-        {stats.map(([value, label]) => (
-          <article key={label}>
-            <b>{value}</b>
-            <span>{label}</span>
+      <section className="landing-value" id="value">
+        {valueCards.map(([title, text]) => (
+          <article key={title}>
+            <h2>{title}</h2>
+            <p>{text}</p>
           </article>
         ))}
       </section>

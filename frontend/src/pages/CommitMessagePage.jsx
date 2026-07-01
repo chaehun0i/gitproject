@@ -1,45 +1,149 @@
-import { notify } from "@utils/feedback";
+import MessageTypeBarChart from "@components/charts/MessageTypeBarChart";
+import { useEffect, useState } from "react";
 import PageShell from "@pages/PageShell";
+import { getCommitMessages } from "../api";
+import { notify } from "@utils/feedback";
+import { useMocks } from "@utils/mockConfig";
+import "@styles/pages/pageCommon.css";
+import "@styles/pages/commitMessagePage.css";
 
-const messages = [
-  ["feat(auth): 로그인 로직 개선 및 예외 처리 추가", "feat", "auth", "로그인 개선"],
-  ["fix(auth): 로그인 실패 처리 개선 및 토큰 생성 로직 변경", "fix", "auth", "인증 처리"],
-  ["refactor(auth): 로그인 흐름 리팩터링 및 가독성 개선", "refactor", "auth", "코드 개선"],
+const recommendedMessages = [
+  {
+    text: "feat(auth): 로그인 세션 refresh 플로우 추가",
+    type: "feat",
+    scope: "auth",
+    reason: "새로고침 후에도 로그인 상태를 유지하는 흐름이 추가되었습니다.",
+  },
+  {
+    text: "fix(auth): refresh 실패 시 인증 상태 복구 처리 개선",
+    type: "fix",
+    scope: "auth",
+    reason: "refresh API 실패 시 프론트 상태와 UX 메시지를 정리한 변경입니다.",
+  },
+  {
+    text: "refactor(api): 인증 API 호출 구조 정리",
+    type: "refactor",
+    scope: "api",
+    reason: "로그인, 로그아웃, 세션 복구 API 호출 경계를 분리했습니다.",
+  },
+  {
+    text: "docs(db): 분석 결과 저장 테이블 구조 문서화",
+    type: "docs",
+    scope: "db",
+    reason: "analysis_runs, analysis_files, ai_findings 저장 구조가 추가되었습니다.",
+  },
+];
+
+const messageStats = [
+  { name: "feat", value: 84 },
+  { name: "fix", value: 62 },
+  { name: "refactor", value: 48 },
+  { name: "docs", value: 28 },
+  { name: "chore", value: 16 },
+];
+
+const messageItems = [
+  ...recommendedMessages,
+  {
+    text: "test(auth): 로그인 유지 흐름 검증 추가",
+    type: "test",
+    scope: "auth",
+    reason: "로그인 유지와 새로고침 복구 흐름을 테스트로 확인하는 작업입니다.",
+  },
+  {
+    text: "chore(ui): 분석 화면 버튼 스타일 정리",
+    type: "chore",
+    scope: "ui",
+    reason: "분석 흐름에서 반복되는 버튼 스타일을 같은 톤으로 맞춘 작업입니다.",
+  },
 ];
 
 const CommitMessagePage = ({ currentPage, onNavigate }) => {
+  const [page, setPage] = useState(1);
+  const [messages, setMessages] = useState(useMocks ? messageItems : []);
+  const [stats, setStats] = useState(useMocks ? messageStats : []);
+  const pageSize = 5;
+  const totalPages = Math.max(1, Math.ceil(messages.length / pageSize));
+  const visibleMessages = messages.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadMessages = async () => {
+      try {
+        const data = await getCommitMessages();
+        if (mounted) {
+          setMessages(data.messages ?? []);
+          setStats(data.stats ?? []);
+        }
+      } catch {
+        if (mounted) {
+          setMessages([]);
+          setStats([]);
+        }
+      }
+    };
+
+    loadMessages();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const copyMessage = (message) => {
+    navigator.clipboard?.writeText(message);
+    notify.success("커밋 메시지를 복사했습니다.");
+  };
+
   return (
-    <PageShell currentPage={currentPage} onNavigate={onNavigate} title="AI 커밋 메시지 제안" description="분석 결과를 바탕으로 메시지를 선택하고 복사합니다.">
-      <section className="commit-message-layout">
+    <PageShell
+      currentPage={currentPage}
+      onNavigate={onNavigate}
+      title="커밋 메시지 생성"
+      description="AI 분석 결과를 바탕으로 Conventional Commit 메시지를 추천합니다."
+    >
+      <section className="commit-message-layout refined-message-layout">
         <div className="message-list">
-          {messages.map(([message, type, scope, tag]) => (
-            <article className="message-card" key={message}>
-              <span className="recommend-badge">AI 추천</span>
-              <code>{message}</code>
-              <div>
-                <span>{type}</span>
-                <span>{scope}</span>
-                <span>{tag}</span>
+          {visibleMessages.map((message, index) => (
+            <article className={index === 0 ? "message-card selected-message" : "message-card"} key={message.text}>
+              <div className="message-card-head">
+                <span className="recommend-badge">AI 추천 {index + 1}</span>
+                <button type="button" onClick={() => copyMessage(message.text)}>복사</button>
               </div>
-              <button type="button" onClick={() => notify.success("커밋 메시지를 복사했습니다.")}>복사</button>
+              <code>{message.text}</code>
+              <p>{message.reason}</p>
+              <div className="message-tags">
+                <span>{message.type}</span>
+                <span>{message.scope}</span>
+                <span>Conventional Commit</span>
+              </div>
             </article>
           ))}
+          <div className="pagination-row compact">
+            <button disabled={page === 1} type="button" onClick={() => setPage((value) => Math.max(1, value - 1))}>이전</button>
+            <span>{page} / {totalPages}</span>
+            <button disabled={page === totalPages} type="button" onClick={() => setPage((value) => Math.min(totalPages, value + 1))}>다음</button>
+          </div>
         </div>
-        <aside className="page-card commit-side-card">
+
+        <aside className="page-card commit-side-card refined-commit-side">
           <h2>이번 분석 요약</h2>
           <div className="commit-mini-summary">
             <span><b>128</b>커밋</span>
             <span><b>42</b>변경 파일</span>
-            <span><b>8</b>리뷰 필요</span>
+            <span><b>92%</b>적용률</span>
           </div>
-          <p>주요 변경 유형은 기능 추가와 리팩터링이며 인증 영역의 메시지는 Conventional Commits 규칙이 적합합니다.</p>
-          <div className="message-type-chart">
-            <span style={{ "--height": "84%" }}>feat</span>
-            <span style={{ "--height": "62%" }}>fix</span>
-            <span style={{ "--height": "48%" }}>refactor</span>
-            <span style={{ "--height": "28%" }}>docs</span>
+          <p>
+            인증 흐름과 세션 복구 변경이 중심이므로 auth scope 메시지를 우선 추천합니다.
+            추천 근거는 변경 요약과 파일별 분석 결과를 바탕으로 표시됩니다.
+          </p>
+          <p className="chart-description">추천 메시지 타입별 분포입니다. 이번 변경에 어떤 메시지 유형이 어울리는지 비교할 수 있습니다.</p>
+          <MessageTypeBarChart data={stats} />
+          <div className="side-actions">
+            <button disabled={!messages[0]} type="button" onClick={() => messages[0] && copyMessage(messages[0].text)}>대표 메시지 복사</button>
+            <button type="button" onClick={() => onNavigate("history")}>분석 내역 보기</button>
           </div>
-          <button type="button" onClick={() => notify.info("모든 메시지를 내보냅니다.")}>모두 복사하기</button>
         </aside>
       </section>
     </PageShell>

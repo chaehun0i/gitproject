@@ -19,8 +19,14 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    proxy: {
-      "/api": process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          charts: ["recharts"],
+        },
+      },
     },
   },
 });

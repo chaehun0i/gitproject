@@ -9,6 +9,7 @@
 | 백엔드 uv 실행 환경 | `uv:1` |
 | MariaDB | `mariadb:12.1.2` |
 | Redis | `redis:8.4.0` |
+| 프론트 로컬 실행 | 로컬 Node.js + Vite |
 | 프론트 빌드 후보 | `node:24.13.0` |
 
 ## 현재 적용 상태
@@ -17,10 +18,10 @@
 | --- | --- |
 | `backend/Dockerfile` | `FROM uv:1` |
 | `db/compose.yaml` | `mariadb:12.1.2`, `redis:8.4.0` |
-| `frontend/Dockerfile` | Nginx 프록시가 필요해서 `nginx:1.27-alpine` 유지 |
+| `frontend/Dockerfile` | 배포 후보용으로 유지 |
 
-프론트는 현재 JavaScript 없이 정적 HTML/CSS만 사용합니다.
+프론트는 현재 Vite + React 기반으로 로컬에서 실행합니다.
 
-Docker로 실행할 때 `/api/` 요청을 FastAPI 백엔드로 넘겨야 하므로 Nginx 이미지를 유지합니다.
+개발 중 API 요청은 `VITE_API_BASE_URL`에 지정한 FastAPI 백엔드 origin으로 전달합니다.
 
-나중에 React/Node 프론트를 다시 도입하면 `node:24.13.0`을 기준 이미지로 사용합니다.
+Docker/Nginx 기반 프론트 배포 구성은 실제 배포 단계에서 다시 고정합니다.

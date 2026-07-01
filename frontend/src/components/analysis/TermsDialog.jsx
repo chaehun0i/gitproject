@@ -9,12 +9,12 @@ const TermsDialog = ({ open, onOpenChange, onAgree }) => {
         <Dialog.Content className="dialog-content terms-dialog">
           <div className="dialog-head">
             <Dialog.Title>분석 약관 동의</Dialog.Title>
-            <Dialog.Close aria-label="닫기">x</Dialog.Close>
+            <Dialog.Close aria-label="닫기">×</Dialog.Close>
           </div>
           <div className="terms-body">
             <p>
-              CommitLens는 업로드한 파일 또는 GitHub 저장소 정보를 분석 목적으로만 사용합니다.
-              민감 정보, 비밀번호, 토큰이 포함된 파일은 업로드하지 않는 것을 권장합니다.
+              CommitLens는 업로드한 Git 산출물과 GitHub 저장소 정보를 분석 목적으로만 사용합니다.
+              비밀번호, 개인 토큰, 운영 환경 변수처럼 민감한 값이 포함된 파일은 업로드하지 않는 것을 권장합니다.
             </p>
             <label className="check-row">
               <input type="checkbox" defaultChecked />

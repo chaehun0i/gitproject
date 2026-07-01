@@ -1,0 +1,115 @@
+﻿.tab-panel {
+  min-height: 490px;
+  padding: 24px;
+}
+
+.tab-panel h2 {
+  margin: 0 0 14px;
+}
+
+.empty-state,
+.empty-text {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.message-card {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.message-card code {
+  padding: 14px;
+  border-radius: 8px;
+  color: #172554;
+  background: #f4f7ff;
+}
+
+.message-card span,
+.recommend-badge {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+
+.refined-message-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  align-items: start;
+}
+
+.selected-message {
+  border-color: #9db0ff;
+  background: linear-gradient(180deg, #ffffff, #f7f9ff);
+}
+
+.message-card-head,
+.message-tags,
+.side-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.message-card-head button {
+  min-height: 34px;
+}
+
+.message-card p::before {
+  content: "추천 근거";
+  display: inline-flex;
+  margin-right: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: #eef2ff;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.message-card-head button,
+.side-actions button:first-child {
+  border: 0;
+  color: #ffffff;
+  background: var(--gradient-ai);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.18);
+}
+
+.refined-commit-side {
+  position: sticky;
+  top: 20px;
+}
+
+.commit-mini-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.commit-mini-summary span {
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f3f6ff;
+  color: #64748b;
+  text-align: center;
+}
+
+.commit-mini-summary b {
+  color: var(--text);
+  font-size: 1.15rem;
+}
+

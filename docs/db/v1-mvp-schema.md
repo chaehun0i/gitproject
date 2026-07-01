@@ -1,63 +1,91 @@
 # DB v1 MVP 스키마
 
-## 버전 정보
+## 기준
 
-| 항목 | 내용 |
-| --- | --- |
-| 버전 | v1 |
-| 범위 | 파일 업로드 기반 코드 변경 분석 |
-| GitHub 연동 | 제외 |
-| 중심 키 | `analysis_run_id` |
-| 기본 DB | PostgreSQL |
+- 실제 서비스 DB: MariaDB
+- 보조 DB: PostgreSQL(pgdb), 향후 벡터 검색과 임베딩 저장 용도
+- Redis: JWE 세션 UUID 저장
+- 핵심 기준 키: `analysis_run_id`
 
-## MVP 목표
-
-v1에서는 GitHub 직접 연동을 제외합니다.
-
-사용자가 업로드하거나 입력한 `git diff`, `git log`, 변경 파일 zip, 직접 입력 텍스트를 분석합니다.
-
-분석 결과로 다음 정보를 제공합니다.
-
-1. 변경 파일 목록
-2. 변경 규모
-3. 프론트엔드, 백엔드, DB, 인프라 분류
-4. 위험 변경 감지
-5. 추천 커밋 메시지
-6. PR 제목과 본문 초안
-7. 리뷰 포인트
-8. 테스트 체크리스트
-
-## v1 테이블
+## MariaDB 테이블
 
 | 테이블 | 역할 |
 | --- | --- |
-| `users` | 사용자 |
+| `users` | 사용자 계정 |
 | `projects` | 분석 프로젝트 |
-| `analysis_runs` | 분석 실행 1회 단위 |
-| `uploaded_files` | 업로드된 파일 |
+| `analysis_runs` | 분석 실행 단위 |
+| `uploaded_files` | 사용자가 올린 Git 산출물 파일 |
 | `changed_files` | 변경 파일 분석 결과 |
 | `risk_findings` | 위험 변경 감지 결과 |
 | `ai_outputs` | AI 생성 결과 |
 
-## 기준 관계
+## 주요 컬럼
 
-MVP의 중심 키는 `analysis_run_id`입니다.
+### users
 
-```text
-project_id = 어떤 프로젝트인지
-analysis_run_id = 이번 분석 실행 1회
-changed_file_id = 이번 분석에서 발견한 변경 파일 1개
-ai_output_id = AI가 생성한 결과 1개
-```
+- `id`: 사용자 ID
+- `email`: 로그인 이메일
+- `password_hash`: 비밀번호 해시
+- `name`: 사용자 이름
+- `created_at`: 생성일
 
-같은 프로젝트에서 여러 번 분석할 수 있으므로 `changed_files`, `risk_findings`, `ai_outputs`는 모두 `analysis_run_id`를 기준으로 묶습니다.
+### projects
 
-```text
-Project A
-  analysis_run_id = 1 : 로그인 기능 diff 분석
-  analysis_run_id = 2 : Docker 설정 변경 분석
-  analysis_run_id = 3 : 전체 PR 변경 사항 분석
-```
+- `id`: 프로젝트 ID
+- `user_id`: 소유 사용자
+- `name`: 프로젝트명
+- `description`: 설명
+- `created_at`, `updated_at`: 생성/수정일
+
+### analysis_runs
+
+- `id`: 분석 실행 ID
+- `project_id`: 프로젝트 ID
+- `user_id`: 사용자 ID
+- `source_type`: `diff_upload`, `zip_upload`, `log_upload`, `manual_text`, `github`
+- `status`: `pending`, `parsing`, `analyzing`, `ai_generating`, `completed`, `failed`
+- `progress`: 진행률
+- `title`: 분석 제목
+- `error_message`: 실패 메시지
+- `started_at`, `completed_at`: 시작/완료 시간
+
+### uploaded_files
+
+- `analysis_run_id`: 분석 실행 ID
+- `original_filename`: 업로드 원본 파일명
+- `stored_path`: 저장 경로
+- `file_type`: diff, patch, txt, zip 등
+- `file_size`: 파일 크기
+- `checksum`: 중복/무결성 확인용 체크섬
+
+### changed_files
+
+- `analysis_run_id`: 분석 실행 ID
+- `file_path`: 변경 파일 경로
+- `old_path`: rename 전 경로
+- `change_type`: added, modified, deleted, renamed 등
+- `language`: 언어
+- `module_type`: frontend, backend, database, infra, config, test, docs, unknown
+- `additions`, `deletions`, `total_changes`: 변경량
+- `patch_text`: diff 본문
+- `is_test_file`, `is_config_file`, `is_sensitive_file`: 파일 성격 플래그
+
+### risk_findings
+
+- `analysis_run_id`: 분석 실행 ID
+- `changed_file_id`: 관련 변경 파일
+- `severity`: low, medium, high, critical
+- `category`: auth_change, db_migration, env_change, docker_change, ci_cd_change, large_delete, no_test, dependency_change, security_sensitive
+- `title`, `description`, `recommendation`: 위험 설명과 제안
+
+### ai_outputs
+
+- `analysis_run_id`: 분석 실행 ID
+- `output_type`: commit_message, pr_title, pr_body, change_summary, review_points, test_checklist, risk_explanation
+- `model_name`: 사용 모델
+- `prompt_version`: 프롬프트 버전
+- `content`: AI 결과 본문
+- `metadata`: 부가 정보
 
 ## ERD 흐름
 
@@ -71,101 +99,18 @@ users
             -> ai_outputs
 ```
 
-## source_type
+## PostgreSQL(pgdb)
 
-`analysis_runs.source_type`은 분석 입력 종류를 나타냅니다.
-
-```text
-diff_upload
-zip_upload
-log_upload
-manual_text
-```
-
-## status
-
-`analysis_runs.status`는 분석 진행 상태를 나타냅니다.
+`pgdb`는 현재 인증/서비스 로직에서 사용하지 않는다. 향후 코드 조각, 분석 결과, 문서 요약을 벡터화해 검색하는 용도로 둔다.
 
 ```text
-pending
-parsing
-analyzing
-ai_generating
-completed
-failed
+vector_documents
+  id
+  source_type
+  source_id
+  title
+  content
+  embedding
+  metadata
+  created_at
 ```
-
-## module_type
-
-`changed_files.module_type`은 변경 파일의 영역을 나타냅니다.
-
-```text
-frontend
-backend
-database
-infra
-config
-test
-docs
-unknown
-```
-
-## 위험 변경 카테고리
-
-`risk_findings.category`는 위험 변경 종류를 나타냅니다.
-
-```text
-auth_change
-db_migration
-env_change
-docker_change
-ci_cd_change
-large_delete
-no_test
-dependency_change
-security_sensitive
-```
-
-## AI 결과 종류
-
-`ai_outputs.output_type`은 AI가 생성한 결과 종류를 나타냅니다.
-
-```text
-commit_message
-pr_title
-pr_body
-change_summary
-review_points
-test_checklist
-risk_explanation
-```
-
-## v1 제외 범위
-
-v1에서는 다음 기능을 구현하지 않습니다.
-
-```text
-GitHub Repository 연결
-GitHub OAuth
-PR 직접 생성
-Issue 연동
-Webhook 자동 분석
-Commit 영구 저장
-```
-
-## 이후 확장 후보
-
-GitHub 연동 단계에서 다음 테이블을 추가할 수 있습니다.
-
-```text
-repositories
-commits
-github_webhook_events
-pull_requests
-```
-
-## 결론
-
-MVP는 파일 업로드 기반 코드 변경 분석기로 시작합니다.
-
-DB는 7개 테이블로 충분하며, 중심 키는 `analysis_run_id`입니다.
