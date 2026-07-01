@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS analysis_runs (
     metadata JSON NULL,
     error_message TEXT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     started_at TIMESTAMP NULL,
     completed_at TIMESTAMP NULL,
     INDEX idx_analysis_runs_project_status (project_id, status),
